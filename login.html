@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBus — Кіру / Тіркелу</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light: #f1f5f9;
+            --white: #ffffff;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-blue: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 50%, #e0e7ff 100%);
+            color: var(--dark);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 700px;
+            display: grid;
+            grid-template-columns: 1fr;
+            background: var(--white);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .auth-left {
+            padding: 50px 40px;
+            background: var(--white);
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+
+        .brand-mark {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient);
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .brand b {
+            color: var(--dark);
+            font-size: 1.5rem;
+        }
+
+        .brand small {
+            display: block;
+            color: var(--gray);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+
+        .auth-heading {
+            margin-bottom: 30px;
+        }
+
+        .auth-heading h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-heading p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .form-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid var(--light);
+            border-radius: 12px;
+            background: var(--white);
+            color: var(--gray);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .tab-btn.active {
+            border-color: var(--primary);
+            background: var(--gradient);
+            color: white;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--gray);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .field label i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+
+        .field input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--light);
+            border-radius: 12px;
+            background: var(--light);
+            color: var(--dark);
+            font-size: 1rem;
+            transition: 0.3s ease;
+        }
+
+        .field input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .password-field {
+            position: relative;
+        }
+
+        .password-field input {
+            padding-right: 50px;
+        }
+
+        .eye-btn {
+            position: absolute;
+            top: 50%;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: var(--gray);
+            font-size: 1.05rem;
+            cursor: pointer;
+            transform: translateY(-50%);
+        }
+
+        .eye-btn:hover {
+            color: var(--primary);
+        }
+
+        .auth-btn {
+            width: 100%;
+            min-height: 52px;
+            margin-top: 10px;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--gradient);
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px -3px rgba(99, 102, 241, 0.4);
+        }
+
+        .auth-error {
+            display: none;
+            align-items: center;
+            gap: 9px;
+            margin-top: 15px;
+            padding: 12px 15px;
+            border: 1px solid #fecaca;
+            border-radius: 11px;
+            background: #fee2e2;
+            color: #dc2626;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .auth-error.show {
+            display: flex;
+        }
+
+        .auth-success {
+            display: none;
+            align-items: center;
+            gap: 9px;
+            margin-top: 15px;
+            padding: 12px 15px;
+            border: 1px solid #bbf7d0;
+            border-radius: 11px;
+            background: #dcfce7;
+            color: #16a34a;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .auth-success.show {
+            display: flex;
+        }
+
+        .demo-box {
+            margin-top: 25px;
+            padding: 15px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            text-align: center;
+        }
+
+        .demo-box p {
+            margin-bottom: 8px;
+            color: var(--gray);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .demo-data {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .demo-data span {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: white;
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 700;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+        }
+
+        .page-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .page-link {
+            flex: 1;
+            min-height: 44px;
+            padding: 11px;
+            border: 1px solid var(--light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--white);
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            transition: 0.3s ease;
+        }
+
+        .page-link:hover {
+            color: var(--primary-dark);
+            border-color: var(--primary);
+            background: var(--light);
+        }
+
+        #toast {
+            position: fixed;
+            left: 50%;
+            bottom: 25px;
+            z-index: 9999;
+            max-width: 90%;
+            padding: 14px 24px;
+            border-radius: 12px;
+            background: var(--dark);
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            opacity: 0;
+            transform: translateX(-50%) translateY(80px);
+            transition: 0.35s ease;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .auth-container {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-right {
+                display: none;
+            }
+
+            .auth-left {
+                padding: 40px 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .auth-left {
+                padding: 30px 22px;
+            }
+
+            .auth-heading h1 {
+                font-size: 1.7rem;
+            }
+
+            .demo-data span {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-left">
+            <a href="index.html" class="brand">
+                <span class="brand-mark">SB</span>
+                <div>
+                    <b>SmartBus</b>
+                    <small>SMART TRAVEL</small>
+                </div>
+            </a>
+            <div class="auth-heading">
+                <h1 id="formTitle">Қош келдіңіз!</h1>
+                <p id="formSubtitle">Жеке кабинетіңізге кіріңіз</p>
+            </div>
+            <div class="form-tabs">
+                <button type="button" class="tab-btn active" onclick="showLogin()">
+                    <i class="fas fa-sign-in-alt"></i> Кіру
+                </button>
+                <button type="button" class="tab-btn" onclick="showRegister()">
+                    <i class="fas fa-user-plus"></i> Тіркелу
+                </button>
+            </div>
+            <form id="loginForm" class="form-section active">
+                <div class="field">
+                    <label for="loginUsername">
+                        <i class="fas fa-user"></i> Логин
+                    </label>
+                    <input type="text" id="loginUsername" placeholder="Логиніңізді енгізіңіз" required>
+                </div>
+                <div class="field">
+                    <label for="loginPassword">
+                        <i class="fas fa-lock"></i> Құпия сөз
+                    </label>
+                    <div class="password-field">
+                        <input type="password" id="loginPassword" placeholder="Құпия сөзіңіз" required>
+                        <button type="button" class="eye-btn" onclick="togglePassword('loginPassword', this)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="loginError" class="auth-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Логин немесе құпия сөз қате</span>
+                </div>
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-sign-in-alt"></i> Кіру
+                </button>
+                </div>
+            </form>
+            <form id="registerForm" class="form-section">
+                <div class="field">
+                    <label for="regName">
+                        <i class="fas fa-user"></i> Аты-жөні
+                    </label>
+                    <input type="text" id="regName" placeholder="Аты-жөніңіз" required>
+                </div>
+                <div class="field">
+                    <label for="regEmail">
+                        <i class="fas fa-envelope"></i> Email
+                    </label>
+                    <input type="email" id="regEmail" placeholder="example@mail.com" required>
+                </div>
+                <div class="field">
+                    <label for="regUsername">
+                        <i class="fas fa-at"></i> Логин
+                    </label>
+                    <input type="text" id="regUsername" placeholder="Логин таңдаңыз" required>
+                </div>
+                <div class="field">
+                    <label for="regPassword">
+                        <i class="fas fa-lock"></i> Құпия сөз
+                    </label>
+                    <div class="password-field">
+                        <input type="password" id="regPassword" placeholder="Құпия сөз" required>
+                        <button type="button" class="eye-btn" onclick="togglePassword('regPassword', this)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="registerError" class="auth-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Бұл логин бос емес</span>
+                </div>
+                <div id="registerSuccess" class="auth-success">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Сәтті тіркелдіңіз!</span>
+                </div>
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-user-plus"></i> Тіркелу
+                </button>
+            </form>
+            
+        </div>
+    </div>
+    <div id="toast"></div>
+    <script>
+        function showToast(message) {
+            let toast = document.getElementById("toast");
+
+            if (!toast) {
+                toast = document.createElement("div");
+                toast.id = "toast";
+                document.body.appendChild(toast);
+            }
+
+            toast.textContent = message;
+            toast.classList.add("show");
+
+            clearTimeout(window.smartBusToastTimer);
+            window.smartBusToastTimer = setTimeout(function() {
+                toast.classList.remove("show");
+            }, 2500);
+        }
+
+        const loginForm = document.getElementById("loginForm");
+        const registerForm = document.getElementById("registerForm");
+        const loginError = document.getElementById("loginError");
+        const registerError = document.getElementById("registerError");
+        const registerSuccess = document.getElementById("registerSuccess");
+        const formTitle = document.getElementById("formTitle");
+        const formSubtitle = document.getElementById("formSubtitle");
+        const tabs = document.querySelectorAll(".tab-btn");
+
+        function showLogin() {
+            loginForm.classList.add("active");
+            registerForm.classList.remove("active");
+            tabs[0].classList.add("active");
+            tabs[1].classList.remove("active");
+            formTitle.textContent = "Қош келдіңіз!";
+            formSubtitle.textContent = "Жеке кабинетіңізге кіріңіз";
+        }
+
+        function showRegister() {
+            loginForm.classList.remove("active");
+            registerForm.classList.add("active");
+            tabs[0].classList.remove("active");
+            tabs[1].classList.add("active");
+            formTitle.textContent = "Тіркелу";
+            formSubtitle.textContent = "Жаңа аккаунт ашыңыз";
+        }
+
+        loginForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            const username = document.getElementById("loginUsername").value.trim();
+            const password = document.getElementById("loginPassword").value;
+
+            if (password === "1111") {
+                const demoUser = {
+                    username: username || "user",
+                    name: username || "SmartBus User",
+                    role: "User",
+                    loginTime: new Date().toLocaleString("kk-KZ")
+                };
+
+                localStorage.setItem("smartbus_user", JSON.stringify(demoUser));
+                loginError.classList.remove("show");
+                showToast("✓ Сәтті кірдіңіз!");
+                setTimeout(function() {
+                    window.location.href = "index.html";
+                }, 700);
+                return;
+            }
+
+            if (username === "admin" && password === "12345") {
+                const user = {
+                    username: "admin",
+                    name: "SmartBus Admin",
+                    role: "Administrator",
+                    loginTime: new Date().toLocaleString("kk-KZ")
+                };
+                localStorage.setItem("smartbus_user", JSON.stringify(user));
+                loginError.classList.remove("show");
+                showToast("✓ Аккаунтқа сәтті кірдіңіз!");
+                setTimeout(function() {
+                    window.location.href = "admin.html";
+                }, 700);
+            } else {
+                const users = JSON.parse(localStorage.getItem("smartbus_users") || "[]");
+                const foundUser = users.find(u => u.username === username && u.password === password);
+                if (foundUser) {
+                    localStorage.setItem("smartbus_user", JSON.stringify(foundUser));
+                    loginError.classList.remove("show");
+                    showToast("✓ Сәтті кірдіңіз, " + foundUser.name + "!");
+                    setTimeout(function() {
+                        window.location.href = "index.html";
+                    }, 700);
+                } else {
+                    loginError.classList.add("show");
+                    showToast("⚠ Логин немесе құпия сөз қате!");
+                }
+            }
+        });
+
+        registerForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            const name = document.getElementById("regName").value.trim();
+            const email = document.getElementById("regEmail").value.trim();
+            const username = document.getElementById("regUsername").value.trim();
+            const password = document.getElementById("regPassword").value;
+            const users = JSON.parse(localStorage.getItem("smartbus_users") || "[]");
+            const exists = users.find(u => u.username === username);
+            if (exists) {
+                registerError.classList.add("show");
+                registerSuccess.classList.remove("show");
+                showToast("⚠ Бұл логин бос емес!");
+            } else {
+                const newUser = {
+                    username: username,
+                    password: password,
+                    name: name,
+                    email: email,
+                    role: "User",
+                    registeredAt: new Date().toLocaleString("kk-KZ")
+                };
+                users.push(newUser);
+                localStorage.setItem("smartbus_users", JSON.stringify(users));
+                registerError.classList.remove("show");
+                registerSuccess.classList.add("show");
+                showToast("✓ Сәтті тіркелдіңіз!");
+                setTimeout(function() {
+                    showLogin();
+                    document.getElementById("loginUsername").value = username;
+                    registerSuccess.classList.remove("show");
+                }, 1500);
+            }
+        });
+
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector("i");
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
+</body>
+</html>

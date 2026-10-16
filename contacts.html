@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBus — Байланыс</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00a7c4;
+            --primary-dark: #00829a;
+            --secondary: #43d9c7;
+            --accent: #ffc233;
+            --success: #23b877;
+            --danger: #ff6b57;
+            --dark: #123a46;
+            --gray: #6d8d97;
+            --light: #e8f6f9;
+            --white: #ffffff;
+            --paper: #f4fbfd;
+            --mint: #ddf7f1;
+            --sun-soft: #fff3d6;
+            --gradient: linear-gradient(135deg, #00c2d4 0%, #43d9c7 100%);
+            --gradient-blue: linear-gradient(135deg, #00a7c4 0%, #7ae0d3 100%);
+            --gradient-light: linear-gradient(135deg, #e8f9fb 0%, #fff3d6 100%);
+            --shadow: 0 6px 18px -8px rgba(18, 58, 70, 0.18);
+            --shadow-lg: 0 18px 40px -18px rgba(0, 130, 154, 0.35);
+        }
+
+        body {
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+            font-family: "Manrope", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(900px 500px at 85% -5%, #fff0cd 0%, rgba(255, 240, 205, 0) 60%), radial-gradient(800px 500px at 0% 10%, #d6f7f1 0%, rgba(214, 247, 241, 0) 60%), var(--paper);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #dff0f4;
+            box-shadow: 0 2px 14px -10px rgba(18, 58, 70, 0.3);
+        }
+
+        .site-header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--dark);
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .brand-mark {
+            width: 45px;
+            height: 45px;
+            border-radius: 16px 16px 16px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 800;
+            box-shadow: 0 8px 16px -8px rgba(0, 167, 196, 0.8);
+        }
+
+        .brand b {
+            color: var(--primary-dark);
+        }
+
+        .brand small {
+            display: block;
+            color: var(--gray);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .main-nav a {
+            padding: 10px 18px;
+            border-radius: 999px;
+            color: var(--dark);
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.25s ease;
+        }
+
+        .main-nav a:hover {
+            background: var(--mint);
+            color: var(--primary-dark);
+        }
+
+        .main-nav a.active {
+            background: var(--sun-soft);
+            color: #9a6b00;
+            box-shadow: inset 0 0 0 2px #ffdd8f;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .lang-btn,
+        .login-btn {
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.25s ease;
+        }
+
+        .lang-btn {
+            border: 2px solid #b6e8ef;
+            background: white;
+            color: var(--primary-dark);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .lang-btn:hover {
+            background: var(--light);
+            border-color: var(--primary);
+        }
+
+        .login-btn {
+            background: var(--accent);
+            color: #4a3000;
+            box-shadow: 0 10px 18px -10px rgba(255, 194, 51, 1);
+        }
+
+        .login-btn:hover {
+            background: #ffcf5c;
+            transform: translateY(-2px);
+        }
+
+        .page-hero {
+            padding: 70px 0 50px;
+            text-align: center;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: var(--mint);
+            color: var(--primary-dark);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .page-hero h1 {
+            margin-bottom: 15px;
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--dark);
+        }
+
+        .page-hero p {
+            max-width: 680px;
+            margin: 0 auto;
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        .contact-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 40px 0 80px;
+        }
+
+        .contact-info,
+        .map-section {
+            padding: 35px;
+            border-radius: 26px;
+            background: white;
+            border: 1px solid #ddf0f4;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .contact-card {
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: 20px;
+            background: var(--gradient-light);
+            border: 2px solid #d9f2f6;
+        }
+
+        .contact-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .contact-card-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 16px 16px 16px 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient);
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .contact-card h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .contact-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .contact-detail {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 18px;
+            padding: 18px;
+            border-radius: 14px;
+            background: white;
+            border: 1px solid #e6f5f8;
+        }
+
+        .contact-detail i {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--mint);
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .contact-detail-text b {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .contact-detail-text a,
+        .contact-detail-text span {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.25s ease;
+        }
+
+        .contact-detail-text a:hover {
+            color: var(--primary);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient);
+            color: white;
+            font-size: 1.3rem;
+            text-decoration: none;
+            transition: 0.25s ease;
+            box-shadow: 0 6px 15px -8px rgba(0, 167, 196, 0.8);
+        }
+
+        .social-link:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px -10px rgba(0, 167, 196, 1);
+        }
+
+        .social-link.whatsapp {
+            background: #25D366;
+        }
+
+        .social-link.instagram {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+        }
+
+        .social-link.telegram {
+            background: #0088cc;
+        }
+
+        .map-section {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .map-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .map-title-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px 16px 16px 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient);
+            color: white;
+            font-size: 1.3rem;
+        }
+
+        .map-title h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .map-title p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .map-container {
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid #d9f2f6;
+            box-shadow: var(--shadow);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 450px;
+            border: none;
+        }
+
+        .map-info {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 16px;
+            background: var(--mint);
+            border: 2px solid #bfeee5;
+        }
+
+        .map-info h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            color: var(--primary-dark);
+            font-weight: 800;
+        }
+
+        .map-info p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .faq-section {
+            padding: 60px 0 80px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 12px;
+        }
+
+        .section-title p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .faq-card {
+            padding: 30px;
+            border-radius: 20px;
+            background: white;
+            border: 2px solid #e6f5f8;
+            transition: 0.25s ease;
+        }
+
+        .faq-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .faq-card-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-light);
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+        }
+
+        .faq-card h3 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 12px;
+        }
+
+        .faq-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .footer {
+            margin-top: 80px;
+            padding: 50px 0;
+            background: #e6f7fa;
+            border-top: 1px solid #cfeef4;
+            color: var(--dark);
+        }
+
+        .footer .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer b {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+        }
+
+        .footer span {
+            color: var(--gray);
+        }
+
+        #toast {
+            position: fixed;
+            left: 50%;
+            bottom: 30px;
+            z-index: 10000;
+            max-width: 90%;
+            padding: 16px 30px;
+            border-radius: 999px;
+            background: white;
+            color: var(--dark);
+            font-weight: 700;
+            text-align: center;
+            border: 2px solid #b6e8ef;
+            box-shadow: 0 18px 30px -16px rgba(0, 130, 154, 0.6);
+            opacity: 0;
+            transform: translateX(-50%) translateY(100px);
+            transition: 0.4s ease;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 1024px) {
+            .contact-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .map-section {
+                position: static;
+            }
+
+            .faq-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .site-header .container {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .main-nav {
+                display: none;
+            }
+
+            .page-hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .contact-info,
+            .map-section {
+                padding: 25px 20px;
+            }
+
+            .footer .container {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .lang-btn,
+            .login-btn {
+                padding: 9px 14px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="index.html" class="brand">
+                <span class="brand-mark">SB</span>
+                <span>
+                    <b>Smart</b>Bus
+                    <small>SMART TRAVEL</small>
+                </span>
+            </a>
+            <nav class="main-nav">
+                <a href="index.html">Басты бет</a>
+                <a href="routes.html">Рейстер</a>
+                <a href="booking.html">Билет брондау</a>
+                <a href="contact.html" class="active">Байланыс</a>
+                <a href="login.html">Басқару
+            </a>
+            </nav>
+            <div class="header-actions">
+                <button class="lang-btn" type="button" onclick="changeLanguage()">ҚАЗ ▾</button>
+                <a href="login.html" class="login-btn">Кіру →</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="page-hero container">
+            <span class="eyebrow">SMARTBUS · CONTACT</span>
+            <h1>Байланыс ақпараты</h1>
+            <p>Бізбен кез келген уақытта хабарласыңыз. Сіздің сұрақтарыңызға жауап беруге дайынбыз!</p>
+        </section>
+        <section class="contact-layout container">
+            <div class="contact-info">
+                <div class="contact-card">
+                    <div class="contact-card-header">
+                        <div class="contact-card-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <h3>Мекенжайымыз</h3>
+                            <p>Бас кеңсе және автовокзал</p>
+                        </div>
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fas fa-building"></i>
+                        <div class="contact-detail-text">
+                            <b>Орталық автовокзал</b>
+                            <span>Ақтөбе қ., Әбілқайыр хан даңғылы, 105</span>
+                        </div>
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fas fa-clock"></i>
+                        <div class="contact-detail-text">
+                            <b>Жұмыс уақыты</b>
+                            <span>Дүйсенбі - Жексенбі: 06:00 - 22:00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-card-header">
+                        <div class="contact-card-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div>
+                            <h3>Байланыс телефондары</h3>
+                            <p>Тәулік бойы жұмыс істейміз</p>
+                        </div>
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fas fa-phone-volume"></i>
+                        <div class="contact-detail-text">
+                            <b>Байланыс орталығы</b>
+                            <a href="tel:+7712792236">+7 (7132) 55-55-55</a>
+                        </div>
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fas fa-mobile-alt"></i>
+                        <div class="contact-detail-text">
+                            <b>WhatsApp / Telegram</b>
+                            <a href="tel:+7712792236">+7 (771) 279-22-36</a>
+                        </div>
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fas fa-fax"></i>
+                        <div class="contact-detail-text">
+                            <b>Факс</b>
+                            <a href="tel:+7712792236">+7 (7132) 55-55-56</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-card-header">
+                        <div class="contact-card-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h3>Электрондық пошта</h3>
+                            <p>Сұрақтарыңызды жазыңыз</p>
+                        </div>
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fas fa-inbox"></i>
+                        <div class="contact-detail-text">
+                            <b>Жалпы сұрақтар</b>
+                            <a href="mailto:info@smartbus.kz">info@smartbus.kz</a>
+                        </div>
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fas fa-headset"></i>
+                        <div class="contact-detail-text">
+                            <b>Қолдау қызметі</b>
+                            <a href="mailto:support@smartbus.kz">support@smartbus.kz</a>
+                        </div>
+                    </div>
+                    <div class="contact-detail">
+                        <i class="fas fa-file-contract"></i>
+                        <div class="contact-detail-text">
+                            <b>Серіктестік</b>
+                            <a href="mailto:partners@smartbus.kz">partners@smartbus.kz</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-card-header">
+                        <div class="contact-card-icon">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <div>
+                            <h3>Әлеуметтік желілер</h3>
+                            <p>Бізге жазылыңыз</p>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://wa.me/7712792236" class="social-link whatsapp" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="https://instagram.com/smartbus_kz" class="social-link instagram" target="_blank">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://t.me/smartbus_kz" class="social-link telegram" target="_blank">
+                            <i class="fab fa-telegram-plane"></i>
+                        </a>
+                        <a href="https://facebook.com/smartbus.kz" class="social-link" target="_blank">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="map-section">
+                <div class="map-title">
+                    <div class="map-title-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <div>
+                        <h3>Біздің картада</h3>
+                        <p>Орналасқан жеріміз</p>
+                    </div>
+                </div>
+                <div class="map-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2564.789123456789!2d57.123456!3d50.283456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTDCsDE3JzAwLjQiTiA1N8KwMDcnMjQuNCJF!5e0!3m2!1skk!2skz!4v1234567890" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+                <div class="map-info">
+                    <h4>
+                        <i class="fas fa-info-circle"></i>
+                        Қалай жетуге болады?
+                    </h4>
+                    <p>
+                        <strong>Автобус:</strong> №5, 12, 25, 30, 45<br>
+                        <strong>Такси:</strong> Яндекс Go, InDrive<br>
+                        <strong>Көлік:</strong> Тегін тұрақ бар (50 орын)
+                    </p>
+                </div>
+            </div>
+        </section>
+        <section class="faq-section container">
+            <div class="section-title">
+                <h2>Жиі қойылатын сұрақтар</h2>
+                <p>Ең көп сұралатын сұрақтарға жауаптар</p>
+            </div>
+            <div class="faq-grid">
+                <div class="faq-card">
+                    <div class="faq-card-icon">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    <h3>Билетті қалай брондауға болады?</h3>
+                    <p>Сайтта тіркеліп, бағытты таңдап, жолаушы мәліметтерін толтырып, орынды таңдаңыз. Брондау 5 минут алады.</p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-card-icon">
+                        <i class="fas fa-undo"></i>
+                    </div>
+                    <h3>Билетті қайтаруға бола ма?</h3>
+                    <p>Иә, рейске 24 сағат қалғанша билетті толық қайтаруға болады. Кейін 50% қайтарылады.</p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-card-icon">
+                        <i class="fas fa-child"></i>
+                    </div>
+                    <h3>Балаларға жеңілдік бар ма?</h3>
+                    <p>3 жасқа дейін - тегін, 3-12 жас - 50% жеңілдік. Студенттерге 20% жеңілдік қарастырылған.</p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-card-icon">
+                        <i class="fas fa-suitcase"></i>
+                    </div>
+                    <h3>Жүк тасымалдау ережелері</h3>
+                    <p>Әр жолаушыға 20 кг дейін жүк тегін. Артық кг үшін 500 ₸/кг төленеді.</p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-card-icon">
+                        <i class="fas fa-paw"></i>
+                    </div>
+                    <h3>Жануарларды алуға бола ма?</h3>
+                    <p>Иә, арнайы контейнерде. Үлкен иттерге ауыздық міндетті. Қосымша 3000 ₸ төленеді.</p>
+                </div>
+                <div class="faq-card">
+                    <div class="faq-card-icon">
+                        <i class="fas fa-wheelchair"></i>
+                    </div>
+                    <h3>Мүмкіндігі шектеулі жандарға</h3>
+                    <p>Барлық автобустарда пандус бар. Алдын ала хабарласып, арнайы орын брондаңыз.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <b>SmartBus</b>
+            <span> © 2026 · Автобус билеттерін басқару жүйесі</span>
+            <span> Ақтөбе · Қазақстан</span>
+        </div>
+    </footer>
+    <div id="toast"></div>
+    <script>
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.classList.add("show");
+            setTimeout(function() {
+                toast.classList.remove("show");
+            }, 3000);
+        }
+        function changeLanguage() {
+            showToast("🌐 Тіл таңдау мәзірі жақында қосылады");
+        }
+        document.querySelectorAll(".contact-detail a").forEach(function(link) {
+            link.addEventListener("click", function() {
+                showToast("✓ Көшірілді: " + this.textContent);
+            });
+        });
+        window.addEventListener("load", function() {
+            setTimeout(function() {
+                showToast("📍 Байланыс бетіне қош келдіңіз!");
+            }, 500);
+        });
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll(".contact-card, .map-section, .faq-card").forEach(function(element) {
+            element.style.opacity = "0";
+            element.style.transform = "translateY(30px)";
+            element.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+            observer.observe(element);
+        });
+    </script>
+</body>
+</html>

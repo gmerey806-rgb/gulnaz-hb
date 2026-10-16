@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartBus — Рейстер</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00a7c4;
+            --primary-dark: #00829a;
+            --secondary: #43d9c7;
+            --accent: #ffc233;
+            --success: #23b877;
+            --danger: #ff6b57;
+            --dark: #123a46;
+            --gray: #6d8d97;
+            --light: #e8f6f9;
+            --white: #ffffff;
+
+            --paper: #f4fbfd;
+            --mint: #ddf7f1;
+            --sun-soft: #fff3d6;
+
+            --gradient: linear-gradient(
+                135deg,
+                #00c2d4 0%,
+                #43d9c7 100%
+            );
+
+            --gradient-blue: linear-gradient(
+                135deg,
+                #00a7c4 0%,
+                #7ae0d3 100%
+            );
+
+            --gradient-light: linear-gradient(
+                135deg,
+                #e8f9fb 0%,
+                #fff3d6 100%
+            );
+
+            --shadow: 0 6px 18px -8px rgba(18, 58, 70, 0.18);
+
+            --shadow-lg: 0 18px 40px -18px rgba(0, 130, 154, 0.35);
+        }
+
+        body {
+            font-family: "Manrope", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+            background:
+                radial-gradient(
+                    900px 500px at 85% -5%,
+                    #fff0cd 0%,
+                    rgba(255, 240, 205, 0) 60%
+                ),
+                radial-gradient(
+                    800px 500px at 0% 10%,
+                    #d6f7f1 0%,
+                    rgba(214, 247, 241, 0) 60%
+                ),
+                var(--paper);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* HEADER */
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #dff0f4;
+            box-shadow: 0 2px 14px -10px rgba(18, 58, 70, 0.3);
+        }
+
+        .site-header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--dark);
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .brand-mark {
+            width: 45px;
+            height: 45px;
+            border-radius: 16px 16px 16px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 800;
+            box-shadow: 0 8px 16px -8px rgba(0, 167, 196, 0.8);
+        }
+
+        .brand b {
+            color: var(--primary-dark);
+        }
+
+        .brand small {
+            display: block;
+            color: var(--gray);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .main-nav a {
+            padding: 10px 18px;
+            border-radius: 999px;
+            color: var(--dark);
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.25s ease;
+        }
+
+        .main-nav a:hover {
+            background: var(--mint);
+            color: var(--primary-dark);
+        }
+
+        .main-nav a.active {
+            background: var(--sun-soft);
+            color: #9a6b00;
+            box-shadow: inset 0 0 0 2px #ffdd8f;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .lang-btn,
+        .login-btn {
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.25s ease;
+        }
+
+        .lang-btn {
+            border: 2px solid #b6e8ef;
+            background: white;
+            color: var(--primary-dark);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .lang-btn:hover {
+            background: var(--light);
+            border-color: var(--primary);
+        }
+
+        .login-btn {
+            background: var(--accent);
+            color: #4a3000;
+            box-shadow: 0 10px 18px -10px rgba(255, 194, 51, 1);
+        }
+
+        .login-btn:hover {
+            background: #ffcf5c;
+            transform: translateY(-2px);
+        }
+
+        /* PAGE HERO */
+
+        .page-hero {
+            padding: 65px 0 40px;
+            text-align: center;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: var(--mint);
+            color: var(--primary-dark);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .page-hero h1 {
+            margin-bottom: 15px;
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--dark);
+        }
+
+        .page-hero p {
+            max-width: 680px;
+            margin: 0 auto;
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        /* SEARCH */
+
+        .route-search {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            align-items: end;
+            gap: 20px;
+            margin-bottom: 50px;
+            padding: 30px;
+            border-radius: 26px;
+            background: white;
+            border: 1px solid #ddf0f4;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field label {
+            color: var(--gray);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .field select,
+        .field input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e2f3f7;
+            border-radius: 14px;
+            background: var(--paper);
+            color: var(--dark);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .field select:focus,
+        .field input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 167, 196, 0.15);
+        }
+
+        .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 51px;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 14px;
+            background: var(--gradient);
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.25s ease;
+            box-shadow: 0 12px 22px -12px rgba(0, 167, 196, 0.9);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 26px -12px rgba(0, 167, 196, 0.9);
+        }
+
+        /* SECTION HEADING */
+
+        .routes-section {
+            padding: 40px 0 80px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 40px;
+            padding: 25px 30px;
+            border-radius: 24px;
+            background: white;
+            border: 1px solid #ddf0f4;
+            box-shadow: var(--shadow);
+        }
+
+        .section-heading h2 {
+            margin-top: 8px;
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .route-count {
+            padding: 10px 20px;
+            border-radius: 999px;
+            background: var(--sun-soft);
+            color: #9a6b00;
+            font-size: 0.95rem;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: inset 0 0 0 2px #ffdd8f;
+        }
+
+        /* BUS CARD */
+
+        .bus-card {
+            position: relative;
+            display: block;
+            overflow: hidden;
+            margin-bottom: 25px;
+            padding: 30px 30px 30px 38px;
+            border: 1px solid #ddf0f4;
+            border-radius: 24px;
+            background: white;
+            box-shadow: var(--shadow);
+            transition: 0.25s ease;
+        }
+
+        .bus-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 8px;
+            background: var(--gradient);
+        }
+
+        .bus-card[data-type="district"]::before {
+            background: linear-gradient(135deg, #ffc233 0%, #ffdd8f 100%);
+        }
+
+        .bus-card:hover {
+            border-color: #b6e8ef;
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .bus-card.hidden {
+            display: none;
+        }
+
+        .route-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 15px;
+            padding: 7px 13px;
+            border-radius: 999px;
+            background: var(--light);
+            color: var(--primary-dark);
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .route-type.district {
+            background: var(--sun-soft);
+            color: #9a6b00;
+        }
+
+        .bus-number {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            border-radius: 10px;
+            background: var(--mint);
+            color: var(--dark);
+            font-size: 0.85rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .bus-main {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+
+        .city {
+            text-align: center;
+        }
+
+        .city b {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+        }
+
+        .city span {
+            color: var(--gray);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .duration {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .duration span {
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: var(--gradient-light);
+            color: var(--primary-dark);
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .duration .line {
+            color: #8fdfd4;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+
+        .duration small {
+            color: var(--success);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .bus-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding-top: 25px;
+            border-top: 2px dashed #dff0f4;
+        }
+
+        .bus-info span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray);
+            font-weight: 600;
+        }
+
+        .bus-info span i {
+            color: var(--primary);
+        }
+
+        .bus-price {
+            color: var(--primary-dark);
+            font-size: 1.7rem;
+            font-weight: 800;
+        }
+
+        .book-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 14px;
+            background: var(--accent);
+            color: #4a3000;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s ease;
+            box-shadow: 0 12px 20px -12px rgba(255, 194, 51, 1);
+        }
+
+        .book-btn:hover {
+            background: #ffcf5c;
+            transform: translateY(-2px);
+        }
+
+        /* EMPTY STATE */
+
+        .empty-state {
+            padding: 80px 20px;
+            border-radius: 24px;
+            background: white;
+            border: 1px solid #ddf0f4;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            margin-bottom: 20px;
+            font-size: 4rem;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .empty-state p {
+            color: var(--gray);
+        }
+
+        /* FOOTER */
+
+        .footer {
+            margin-top: 80px;
+            padding: 50px 0;
+            background: #e6f7fa;
+            border-top: 1px solid #cfeef4;
+            color: var(--dark);
+        }
+
+        .footer .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer b {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+        }
+
+        .footer span {
+            color: var(--gray);
+        }
+
+        /* TOAST */
+
+        #toast {
+            position: fixed;
+            left: 50%;
+            bottom: 30px;
+            z-index: 9999;
+            max-width: 90%;
+            padding: 16px 30px;
+            border-radius: 999px;
+            background: white;
+            color: var(--dark);
+            font-weight: 700;
+            text-align: center;
+            border: 2px solid #b6e8ef;
+            box-shadow: 0 18px 30px -16px rgba(0, 130, 154, 0.6);
+            opacity: 0;
+            transform: translateX(-50%) translateY(100px);
+            transition: 0.4s ease;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+            }
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1024px) {
+            .route-search {
+                grid-template-columns: 1fr;
+            }
+
+            .bus-main {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .duration {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .site-header .container {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .main-nav {
+                display: none;
+            }
+
+            .page-hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .section-heading {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .bus-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .bus-info span,
+            .bus-price {
+                justify-content: center;
+            }
+
+            .book-btn {
+                width: 100%;
+            }
+
+            .footer .container {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .lang-btn,
+            .login-btn {
+                padding: 9px 14px;
+                font-size: 0.85rem;
+            }
+
+            .bus-card {
+                padding: 22px 18px 22px 26px;
+            }
+
+            .city b {
+                font-size: 1.5rem;
+            }
+
+            .duration .line {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="container">
+
+        <a href="../index.html" class="brand">
+            <span class="brand-mark">SB</span>
+
+            <span>
+                <b>Smart</b>Bus
+                <small>SMART TRAVEL</small>
+            </span>
+        </a>
+
+        <nav class="main-nav">
+            <a href="../index.html">
+                Басты бет
+            </a>
+
+            <a href="routes.html" class="active">
+                Рейстер
+            </a>
+
+            <a href="booking.html"> Билет брондау
+                
+                <a href="contacts.html">Байланыс</a>
+
+            <a href="login.html">
+                Басқару
+            </a>
+        </nav>
+
+        <div class="header-actions">
+
+            <button
+                class="lang-btn"
+                type="button"
+                onclick="changeLanguage()">
+                ҚАЗ ▾
+            </button>
+
+            <a
+                href="login.html"
+                class="login-btn">
+                Кіру →
+            </a>
+
+        </div>
+
+    </div>
+</header>
+
+<main>
+
+    <section class="page-hero container">
+
+        <span class="eyebrow">
+            SMARTBUS · ROUTES
+        </span>
+
+        <h1>
+            Автобус рейстері
+        </h1>
+
+        <p>
+            Қалааралық және ауданаралық бағыттарды таңдап,
+            автобустың нөмірін, бағасын және бос орындарын көріңіз.
+        </p>
+
+    </section>
+
+    <section class="route-search container">
+
+        <div class="field">
+
+            <label for="from">
+                ҚАЙДАН
+            </label>
+
+            <select id="from">
+                <option value="">
+                    Барлық қалалар
+                </option>
+
+                <option>Ақтөбе</option>
+                <option>Астана</option>
+                <option>Алматы</option>
+                <option>Шымкент</option>
+                <option>Атырау</option>
+                <option>Ақтау</option>
+                <option>Орал</option>
+                <option>Қызылорда</option>
+                <option>Түркістан</option>
+                <option>Тараз</option>
+                <option>Қарағанды</option>
+                <option>Павлодар</option>
+                <option>Өскемен</option>
+                <option>Семей</option>
+                <option>Петропавл</option>
+                <option>Көкшетау</option>
+                <option>Қостанай</option>
+                <option>Талдықорған</option>
+                <option>Қонаев</option>
+                <option>Жезқазған</option>
+            </select>
+
+        </div>
+
+        <div class="field">
+
+            <label for="to">
+                ҚАЙДА
+            </label>
+
+            <select id="to">
+                <option value="">
+                    Барлық қалалар
+                </option>
+
+                <option>Ақтөбе</option>
+                <option>Астана</option>
+                <option>Алматы</option>
+                <option>Шымкент</option>
+                <option>Атырау</option>
+                <option>Ақтау</option>
+                <option>Орал</option>
+                <option>Қызылорда</option>
+                <option>Түркістан</option>
+                <option>Тараз</option>
+                <option>Қарағанды</option>
+                <option>Павлодар</option>
+                <option>Өскемен</option>
+                <option>Семей</option>
+                <option>Петропавл</option>
+                <option>Көкшетау</option>
+                <option>Қостанай</option>
+                <option>Талдықорған</option>
+                <option>Қонаев</option>
+                <option>Жезқазған</option>
+            </select>
+
+        </div>
+
+        <div class="field">
+
+            <label for="date">
+                КҮН
+            </label>
+
+            <input
+                type="date"
+                id="date">
+
+        </div>
+
+        <button
+            type="button"
+            class="primary-btn"
+            onclick="filterRoutes()">
+
+            <i class="fas fa-search"></i>
+            Іздеу
+
+        </button>
+
+    </section>
+
+    <section class="routes-section container">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="eyebrow">
+                    ҚОЛЖЕТІМДІ РЕЙСТЕР
+                </span>
+
+                <h2 id="resultTitle">
+                    Барлық рейстер
+                </h2>
+
+            </div>
+
+            <span
+                class="route-count"
+                id="routeCount">
+                8 рейс
+            </span>
+
+        </div>
+
+        <div id="routesList">
+
+            <!-- ҚАЛААРАЛЫҚ 1 -->
+
+            <article
+                class="bus-card"
+                data-type="city"
+                data-from="Ақтөбе"
+                data-to="Алматы">
+
+                <div class="route-type">
+                    <i class="fas fa-city"></i>
+                    Қалааралық рейс
+                </div>
+
+                <div class="bus-number">
+                    Автобус № SB-101
+                </div>
+
+                <div class="bus-main">
+
+                    <div class="city">
+                        <b>12:30</b>
+                        <span>Ақтөбе</span>
+                    </div>
+
+                    <div class="duration">
+                        <span>24 сағ</span>
+                        <div class="line">━━━━━━━━━</div>
+                        <small>Тікелей рейс</small>
+                    </div>
+
+                    <div class="city">
+                        <b>12:30</b>
+                        <span>Алматы</span>
+                    </div>
+
+                </div>
+
+                <div class="bus-info">
+
+                    <span>
+                        <i class="fas fa-bus"></i>
+                        Grand Bus
+                    </span>
+
+                    <span>
+                        <i class="fas fa-chair"></i>
+                        18 орын бос
+                    </span>
+
+                    <span>
+                        <i class="fas fa-road"></i>
+                        1 700 км
+                    </span>
+
+                    <strong class="bus-price">
+                        8 500 ₸
+                    </strong>
+
+                    <button
+                        type="button"
+                        class="book-btn"
+                        onclick="bookRoute(
+                            'SB-101',
+                            'Қалааралық',
+                            'Ақтөбе',
+                            'Алматы',
+                            '12:30',
+                            '8 500',
+                            'Grand Bus'
+                        )">
+
+                        <i class="fas fa-ticket-alt"></i>
+                        Брондау
+
+                    </button>
+
+                </div>
+
+            </article>
+
+            <!-- ҚАЛААРАЛЫҚ 2 -->
+
+            <article
+                class="bus-card"
+                data-type="city"
+                data-from="Ақтөбе"
+                data-to="Астана">
+
+                <div class="route-type">
+                    <i class="fas fa-city"></i>
+                    Қалааралық рейс
+                </div>
+
+                <div class="bus-number">
+                    Автобус № SB-205
+                </div>
+
+                <div class="bus-main">
+
+                    <div class="city">
+                        <b>19:00</b>
+                        <span>Ақтөбе</span>
+                    </div>
+
+                    <div class="duration">
+                        <span>18 сағ</span>
+                        <div class="line">━━━━━━━━━</div>
+                        <small>Тікелей рейс</small>
+                    </div>
+
+                    <div class="city">
+                        <b>13:00</b>
+                        <span>Астана</span>
+                    </div>
+
+                </div>
+
+                <div class="bus-info">
+
+                    <span>
+                        <i class="fas fa-bus"></i>
+                        Smart Coach
+                    </span>
+
+                    <span>
+                        <i class="fas fa-chair"></i>
+                        12 орын бос
+                    </span>
+
+                    <span>
+                        <i class="fas fa-road"></i>
+                        1 500 км
+                    </span>
+
+                    <strong class="bus-price">
+                        9 200 ₸
+                    </strong>
+
+                    <button
+                        type="button"
+                        class="book-btn"
+                        onclick="bookRoute(
+                            'SB-205',
+                            'Қалааралық',
+                            'Ақтөбе',
+                            'Астана',
+                            '19:00',
+                            '9 200',
+                            'Smart Coach'
+                        )">
+
+                        <i class="fas fa-ticket-alt"></i>
+                        Брондау
+
+                    </button>
+
+                </div>
+
+            </article>
+
+            <!-- ҚАЛААРАЛЫҚ 3 -->
+
+            <article
+                class="bus-card"
+                data-type="city"
+                data-from="Ақтөбе"
+                data-to="Атырау">
+
+                <div class="route-type">
+                    <i class="fas fa-city"></i>
+                    Қалааралық рейс
+                </div>
+
+                <div class="bus-number">
+                    Автобус № SB-310
+                </div>
+
+                <div class="bus-main">
+
+                    <div class="city">
+                        <b>08:30</b>
+                        <span>Ақтөбе</span>
+                    </div>
+
+                    <div class="duration">
+                        <span>7 сағ</span>
+                        <div class="line">━━━━━━━━━</div>
+                        <small>Тікелей рейс</small>
+                    </div>
+
+                    <div class="city">
+                        <b>15:30</b>
+                        <span>Атырау</span>
+                    </div>
+
+                </div>
+
+                <div class="bus-info">
+
+                    <span>
+                        <i class="fas fa-bus"></i>
+                        WestLine
+                    </span>
+
+                    <span>
+                        <i class="fas fa-chair"></i>
+                        24 орын бос
+                    </span>
+
+                    <span>
+                        <i class="fas fa-road"></i>
+                        480 км
+                    </span>
+
+                    <strong class="bus-price">
+                        5 500 ₸
+                    </strong>
+
+                    <button
+                        type="button"
+                        class="book-btn"
+                        onclick="bookRoute(
+                            'SB-310',
+                            'Қалааралық',
+                            'Ақтөбе',
+                            'Атырау',
+                            '08:30',
+                            '5 500',
+                            'WestLine'
+                        )">
+
+                        <i class="fas fa-ticket-alt"></i>
+                        Брондау
+
+                    </button>
+
+                </div>
+
+            </article>
+
+            <!-- ҚАЛААРАЛЫҚ 4 -->
+
+            <article
+                class="bus-card"
+                data-type="city"
+                data-from="Алматы"
+                data-to="Астана">
+
+                <div class="route-type">
+                    <i class="fas fa-city"></i>
+                    Қалааралық рейс
+                </div>
+
+                <div class="bus-number">
+                    Автобус № SB-401
+                </div>
+
+                <div class="bus-main">
+
+                    <div class="city">
+                        <b>21:00</b>
+                        <span>Алматы</span>
+                    </div>
+
+                    <div class="duration">
+                        <span>16 сағ</span>
+                        <div class="line">━━━━━━━━━</div>
+                        <small>Тікелей рейс</small>
+                    </div>
+
+                    <div class="city">
+                        <b>13:00</b>
+                        <span>Астана</span>
+                    </div>
+
+                </div>
+
+                <div class="bus-info">
+
+                    <span>
+                        <i class="fas fa-bus"></i>
+                        Express
+                    </span>
+
+                    <span>
+                        <i class="fas fa-chair"></i>
+                        9 орын бос
+                    </span>
+
+                    <span>
+                        <i class="fas fa-road"></i>
+                        1 200 км
+                    </span>
+
+                    <strong class="bus-price">
+                        12 000 ₸
+                    </strong>
+
+                    <button
+                        type="button"
+                        class="book-btn"
+                        onclick="bookRoute(
+                            'SB-401',
+                            'Қалааралық',
+                            'Алматы',
+                            'Астана',
+                            '21:00',
+                            '12 000',
+                            'Express'
+                        )">
+
+                        <i class="fas fa-ticket-alt"></i>
+                        Брондау
+
+                    </button>
+
+                </div>
+
+            </article>
+
+            <!-- ҚАЛААРАЛЫҚ 5 -->
+
+            <article
+                class="bus-card"
+                data-type="city"
+                data-from="Шымкент"
+                data-to="Алматы">
+
+                <div class="route-type">
+                    <i class="fas fa-city"></i>
+                    Қалааралық рейс
+                </div>
+
+                <div class="bus-number">
+                    Автобус № SB-512
+                </div>
+
+                <div class="bus-main">
+
+                    <div class="city">
+                        <b>07:00</b>
+                        <span>Шымкент</span>
+                    </div>
+
+                    <div class="duration">
+                        <span>11 сағ</span>
+                        <div class="line">━━━━━━━━━</div>
+                        <small>Тікелей рейс</small>
+                    </div>
+
+                    <div class="city">
+                        <b>18:00</b>
+                        <span>Алматы</span>
+                    </div>
+
+                </div>
+
+                <div class="bus-info">
+
+                    <span>
+                        <i class="fas fa-bus"></i>
+                        South Bus
+                    </span>
+
+                    <span>
+                        <i class="fas fa-chair"></i>
+                        15 орын бос
+                    </span>
+
+                    <span>
+                        <i class="fas fa-road"></i>
+                        700 км
+                    </span>
+
+                    <strong class="bus-price">
+                        7 000 ₸
+                    </strong>
+
+                    <button
+                        type="button"
+                        class="book-btn"
+                        onclick="bookRoute(
+                            'SB-512',
+                            'Қалааралық',
+                            'Шымкент',
+                            'Алматы',
+                            '07:00',
+                            '7 000',
+                            'South Bus'
+                        )">
+
+                        <i class="fas fa-ticket-alt"></i>
+                        Брондау
+
+                    </button>
+
+                </div>
+
+            </article>
+
+            <!-- ҚАЛААРАЛЫҚ 6 -->
+
+            <article
+                class="bus-card"
+                data-type="city"
+                data-from="Қарағанды"
+                data-to="Астана">
+
+                <div class="route-type">
+                    <i class="fas fa-city"></i>
+                    Қалааралық рейс
+                </div>
+
+                <div class="bus-number">
+                    Автобус № SB-608
+                </div>
+
+                <div class="bus-main">
+
+                    <div class="city">
+                        <b>10:00</b>
+                        <span>Қарағанды</span>
+                    </div>
+
+                    <div class="duration">
+                        <span>4 сағ</span>
+                        <div class="line">━━━━━━━━━</div>
+                        <small>Тікелей рейс</small>
+                    </div>
+
+                    <div class="city">
+                        <b>14:00</b>
+                        <span>Астана</span>
+                    </div>
+
+                </div>
+
+                <div class="bus-info">
+
+                    <span>
+                        <i class="fas fa-bus"></i>
+                        Central Bus
+                    </span>
+
+                    <span>
+                        <i class="fas fa-chair"></i>
+                        21 орын бос
+                    </span>
+
+                    <span>
+                        <i class="fas fa-road"></i>
+                        220 км
+                    </span>
+
+                    <strong class="bus-price">
+                        4 500 ₸
+                    </strong>
+
+                    <button
+                        type="button"
+                        class="book-btn"
+                        onclick="bookRoute(
+                            'SB-608',
+                            'Қалааралық',
+                            'Қарағанды',
+                            'Астана',
+                            '10:00',
+                            '4 500',
+                            'Central Bus'
+                        )">
+
+                        <i class="fas fa-ticket-alt"></i>
+                        Брондау
+
+                    </button>
+
+                </div>
+
+            </article>
+
+            <!-- АУДАНАРАЛЫҚ 1 -->
+
+            <article
+                class="bus-card"
+                data-type="district"
+                data-from="Ақтөбе"
+                data-to="Алға">
+
+                <div class="route-type district">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Ауданаралық рейс
+                </div>
+
+                <div class="bus-number">
+                    Автобус № AB-701
+                </div>
+
+                <div class="bus-main">
+
+                    <div class="city">
+                        <b>07:30</b>
+                        <span>Ақтөбе</span>
+                    </div>
+
+                    <div class="duration">
+                        <span>1 сағ 20 мин</span>
+                        <div class="line">━━━━━━━━━</div>
+                        <small>Аудан бағыты</small>
+                    </div>
+
+                    <div class="city">
+                        <b>08:50</b>
+                        <span>Алға</span>
+                    </div>
+
+                </div>
+
+                <div class="bus-info">
+
+                    <span>
+                        <i class="fas fa-bus"></i>
+                        Aktobe District
+                    </span>
+
+                    <span>
+                        <i class="fas fa-chair"></i>
+                        28 орын бос
+                    </span>
+
+                    <span>
+                        <i class="fas fa-road"></i>
+                        42 км
+                    </span>
+
+                    <strong class="bus-price">
+                        1 200 ₸
+                    </strong>
+
+                    <button
+                        type="button"
+                        class="book-btn"
+                        onclick="bookRoute(
+                            'AB-701',
+                            'Ауданаралық',
+                            'Ақтөбе',
+                            'Алға',
+                            '07:30',
+                            '1 200',
+                            'Aktobe District'
+                        )">
+
+                        <i class="fas fa-ticket-alt"></i>
+                        Брондау
+
+                    </button>
+
+                </div>
+
+            </article>
+
+            <!-- АУДАНАРАЛЫҚ 2 -->
+
+            <article
+                class="bus-card"
+                data-type="district"
+                data-from="Ақтөбе"
+                data-to="Хромтау">
+
+                <div class="route-type district">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Ауданаралық рейс
+                </div>
+
+                <div class="bus-number">
+                    Автобус № AB-715
+                </div>
+
+                <div class="bus-main">
+
+                    <div class="city">
+                        <b>09:00</b>
+                        <span>Ақтөбе</span>
+                    </div>
+
+                    <div class="duration">
+                        <span>2 сағ 10 мин</span>
+                        <div class="line">━━━━━━━━━</div>
+                        <small>Аудан бағыты</small>
+                    </div>
+
+                    <div class="city">
+                        <b>11:10</b>
+                        <span>Хромтау</span>
+                    </div>
+
+                </div>
+
+                <div class="bus-info">
+
+                    <span>
+                        <i class="fas fa-bus"></i>
+                        Aktobe District
+                    </span>
+
+                    <span>
+                        <i class="fas fa-chair"></i>
+                        17 орын бос
+                    </span>
+
+                    <span>
+                        <i class="fas fa-road"></i>
+                        95 км
+                    </span>
+
+                    <strong class="bus-price">
+                        1 800 ₸
+                    </strong>
+
+                    <button
+                        type="button"
+                        class="book-btn"
+                        onclick="bookRoute(
+                            'AB-715',
+                            'Ауданаралық',
+                            'Ақтөбе',
+                            'Хромтау',
+                            '09:00',
+                            '1 800',
+                            'Aktobe District'
+                        )">
+
+                        <i class="fas fa-ticket-alt"></i>
+                        Брондау
+
+                    </button>
+
+                </div>
+
+            </article>
+
+        </div>
+
+        <div
+            id="empty"
+            class="empty-state"
+            style="display: none;">
+
+            <div class="empty-state-icon">
+                🚌
+            </div>
+
+            <h3>
+                Рейс табылмады
+            </h3>
+
+            <p>
+                Басқа бағытты немесе қаланы таңдап көріңіз.
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="footer">
+
+    <div class="container">
+
+        <b>
+            SmartBus
+        </b>
+
+        <span>
+            © 2026 · Автобус билеттерін басқару жүйесі
+        </span>
+
+        <span>
+            Ақтөбе · Қазақстан
+        </span>
+
+    </div>
+
+</footer>
+
+<div id="toast"></div>
+
+<script>
+    const dateInput = document.getElementById("date");
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+
+    dateInput.min = `${year}-${month}-${day}`;
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        renderSavedRoutes();
+        updateRouteAvailability();
+
+        const savedFrom =
+            localStorage.getItem("smartbus_from");
+
+        const savedTo =
+            localStorage.getItem("smartbus_to");
+
+        const savedDate =
+            localStorage.getItem("smartbus_date");
+
+        if (savedFrom) {
+            document.getElementById("from").value = savedFrom;
+        }
+
+        if (savedTo) {
+            document.getElementById("to").value = savedTo;
+        }
+
+        if (savedDate) {
+            document.getElementById("date").value = savedDate;
+        }
+
+        if (savedFrom || savedTo) {
+            filterRoutes(false);
+        }
+
+        setTimeout(function() {
+            showToast("🚌 Барлық рейстер жүктелді!");
+        }, 500);
+    });
+
+
+    function renderSavedRoutes() {
+        const routesList =
+            document.getElementById("routesList");
+
+        const savedRoutes = JSON.parse(
+            localStorage.getItem("smartbus_routes") || "[]"
+        );
+
+        savedRoutes.forEach(function(route) {
+            const card = document.createElement("article");
+
+            card.className = "bus-card";
+            card.dataset.type = "city";
+            card.dataset.from = route.from;
+            card.dataset.to = route.to;
+            card.dataset.busNumber = route.id;
+            card.dataset.baseAvailable = "40";
+
+            card.innerHTML = `
+                <div class="route-type">
+                    <i class="fas fa-city"></i>
+                    Жаңа рейс
+                </div>
+
+                <div class="bus-number">
+                    Автобус № ${escapeHTML(route.id)}
+                </div>
+
+                <div class="bus-main">
+                    <div class="city">
+                        <b>${escapeHTML(route.time)}</b>
+                        <span>${escapeHTML(route.from)}</span>
+                    </div>
+
+                    <div class="duration">
+                        <span>Тікелей рейс</span>
+                        <div class="line">━━━━━━━━━</div>
+                        <small>Жаңа бағыт</small>
+                    </div>
+
+                    <div class="city">
+                        <b>${escapeHTML(route.time)}</b>
+                        <span>${escapeHTML(route.to)}</span>
+                    </div>
+                </div>
+
+                <div class="bus-info">
+                    <span>
+                        <i class="fas fa-bus"></i>
+                        ${escapeHTML(route.bus)}
+                    </span>
+
+                    <span>
+                        <i class="fas fa-chair"></i>
+                        40 орын бос
+                    </span>
+
+                    <span>
+                        <i class="fas fa-road"></i>
+                        Жаңа бағыт
+                    </span>
+
+                    <strong class="bus-price">
+                        ${formatRoutePrice(route.price)}
+                    </strong>
+
+                    <button type="button" class="book-btn">
+                        <i class="fas fa-ticket-alt"></i>
+                        Брондау
+                    </button>
+                </div>
+            `;
+
+            card
+                .querySelector(".book-btn")
+                .addEventListener("click", function() {
+                    bookRoute(
+                        route.id,
+                        "Қалааралық",
+                        route.from,
+                        route.to,
+                        route.time,
+                        String(route.price),
+                        route.bus
+                    );
+                });
+
+            routesList.appendChild(card);
+        });
+    }
+
+
+    function formatRoutePrice(value) {
+        return Number(value || 0).toLocaleString("kk-KZ") + " ₸";
+    }
+
+
+    function getRouteBookings() {
+        return JSON.parse(
+            localStorage.getItem("smartbus_bookings") || "[]"
+        );
+    }
+
+
+    function getBusNumber(card) {
+        if (card.dataset.busNumber) {
+            return card.dataset.busNumber;
+        }
+
+        const numberText =
+            card.querySelector(".bus-number")?.textContent || "";
+
+        const match = numberText.match(/[A-Z]{2}-\d+/);
+        return match ? match[0] : "";
+    }
+
+
+    function updateRouteAvailability() {
+        const bookings = getRouteBookings();
+
+        document
+            .querySelectorAll(".bus-card")
+            .forEach(function(card) {
+                const number = getBusNumber(card);
+                const availability = Array.from(
+                    card.querySelectorAll(".bus-info span")
+                ).find(function(span) {
+                    return span.querySelector(".fa-chair");
+                });
+
+                if (!number || !availability) {
+                    return;
+                }
+
+                if (!card.dataset.baseAvailable) {
+                    const match = availability.textContent.match(/\d+/);
+                    card.dataset.baseAvailable = match ? match[0] : "0";
+                }
+
+                const bookedSeats = bookings
+                    .filter(function(booking) {
+                        return booking.busNumber === number;
+                    })
+                    .reduce(function(total, booking) {
+                        return total + (
+                            Array.isArray(booking.seats)
+                                ? booking.seats.length
+                                : 0
+                        );
+                    }, 0);
+
+                const freeSeats = Math.max(
+                    0,
+                    Number(card.dataset.baseAvailable) - bookedSeats
+                );
+
+                availability.innerHTML =
+                    '<i class="fas fa-chair"></i> ' +
+                    freeSeats +
+                    " орын бос";
+            });
+    }
+
+
+    function escapeHTML(value) {
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    function filterRoutes(showMessage = true) {
+        const from =
+            document.getElementById("from").value;
+
+        const to =
+            document.getElementById("to").value;
+
+        const date =
+            document.getElementById("date").value;
+
+        const cards =
+            document.querySelectorAll(".bus-card");
+
+        let count = 0;
+
+        cards.forEach(function(card) {
+            const cardFrom = card.dataset.from;
+            const cardTo = card.dataset.to;
+
+            const fromMatch =
+                !from || cardFrom === from;
+
+            const toMatch =
+                !to || cardTo === to;
+
+            if (fromMatch && toMatch) {
+                card.classList.remove("hidden");
+                count++;
+            } else {
+                card.classList.add("hidden");
+            }
+        });
+
+        document.getElementById("routeCount").textContent =
+            count + " рейс";
+
+        if (from && to) {
+            document.getElementById("resultTitle").textContent =
+                from + " → " + to;
+        } else if (from) {
+            document.getElementById("resultTitle").textContent =
+                from + " қаласынан";
+        } else if (to) {
+            document.getElementById("resultTitle").textContent =
+                to + " қаласына";
+        } else {
+            document.getElementById("resultTitle").textContent =
+                "Барлық рейстер";
+        }
+
+        document.getElementById("empty").style.display =
+            count === 0 ? "block" : "none";
+
+        if (showMessage) {
+            if (count > 0) {
+                showToast("✓ " + count + " рейс табылды");
+            } else {
+                showToast("⚠ Рейс табылмады");
+            }
+        }
+    }
+
+
+    function bookRoute(
+        busNumber,
+        routeType,
+        from,
+        to,
+        time,
+        price,
+        company
+    ) {
+        localStorage.setItem(
+            "booking_bus_number",
+            busNumber
+        );
+
+        localStorage.setItem(
+            "booking_route_type",
+            routeType
+        );
+
+        localStorage.setItem(
+            "booking_from",
+            from
+        );
+
+        localStorage.setItem(
+            "booking_to",
+            to
+        );
+
+        localStorage.setItem(
+            "booking_time",
+            time
+        );
+
+        localStorage.setItem(
+            "booking_price",
+            price
+        );
+
+        localStorage.setItem(
+            "booking_company",
+            company
+        );
+
+        showToast(
+            "✓ " +
+            busNumber +
+            " рейсі таңдалды"
+        );
+
+        setTimeout(function() {
+            window.location.href = "booking.html";
+        }, 800);
+    }
+
+
+    function showToast(message) {
+        const toast =
+            document.getElementById("toast");
+
+        toast.textContent = message;
+        toast.classList.add("show");
+
+        setTimeout(function() {
+            toast.classList.remove("show");
+        }, 3000);
+    }
+
+
+    function changeLanguage() {
+        showToast(
+            "🌐 Тіл таңдау мәзірі жақында қосылады"
+        );
+    }
+
+
+    window.addEventListener("storage", function(event) {
+        if (event.key === "smartbus_bookings") {
+            updateRouteAvailability();
+        }
+    });
+
+
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px"
+    };
+
+    const observer = new IntersectionObserver(
+        function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform =
+                        "translateY(0)";
+                }
+            });
+        },
+        observerOptions
+    );
+
+    document
+        .querySelectorAll(".bus-card")
+        .forEach(function(element) {
+            element.style.opacity = "0";
+            element.style.transform = "translateY(30px)";
+            element.style.transition =
+                "opacity 0.6s ease, transform 0.6s ease";
+
+            observer.observe(element);
+        });
+</script>
+
+</body>
+</html>

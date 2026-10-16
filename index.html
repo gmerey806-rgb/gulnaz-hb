@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBus — Автобус билеттері</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00a7c4;
+            --primary-hover: #00829a;
+            --primary-dark: #00829a;
+            --secondary: #ffc233;
+            --accent: #43d9c7;
+            --dark: #123a46;
+            --gray: #6d8d97;
+            --light: #e8f6f9;
+            --white: #FFFFFF;
+
+            --paper: #f4fbfd;
+            --mint: #ddf7f1;
+            --sun-soft: #fff3d6;
+
+            --bg-gradient:
+                radial-gradient(900px 500px at 88% -5%, #fff0cd 0%, rgba(255, 240, 205, 0) 60%),
+                radial-gradient(800px 500px at 0% 15%, #d6f7f1 0%, rgba(214, 247, 241, 0) 60%),
+                var(--paper);
+
+            --gradient: linear-gradient(135deg, #00c2d4 0%, #43d9c7 100%);
+            --gradient-sun: linear-gradient(135deg, #ffc233, #ffdd8f);
+
+            --card-shadow: 0 8px 30px -14px rgba(18, 58, 70, 0.2);
+            --card-hover: 0 20px 45px -20px rgba(0, 167, 196, 0.35);
+        }
+
+        body {
+            font-family: 'Manrope', 'Segoe UI', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .site-header {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid #dff0f4;
+            box-shadow: 0 2px 16px -12px rgba(18, 58, 70, 0.35);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 18px 0;
+        }
+
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 800;
+            font-size: 1.6rem;
+            white-space: nowrap;
+        }
+
+        .brand b {
+            color: var(--primary-dark);
+        }
+
+        .brand-mark {
+            width: 50px;
+            height: 50px;
+            border-radius: 18px 18px 18px 6px;
+            background: var(--gradient);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3rem;
+            font-weight: 900;
+            box-shadow: 0 10px 20px -10px rgba(0, 167, 196, 0.9);
+        }
+
+        .brand small {
+            display: block;
+            color: var(--gray);
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 6px;
+        }
+
+        .main-nav a {
+            color: var(--dark);
+            text-decoration: none;
+            padding: 12px 22px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+        }
+
+        .main-nav a:hover {
+            background: var(--mint);
+            color: var(--primary-dark);
+        }
+
+        .main-nav a.active {
+            background: var(--sun-soft);
+            color: #9a6b00;
+            box-shadow: inset 0 0 0 2px #ffdd8f;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .lang-btn,
+        .login-btn {
+            padding: 12px 26px;
+            border-radius: 999px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            font-size: 0.95rem;
+        }
+
+        .lang-btn {
+            border: 2px solid #b6e8ef;
+            color: var(--primary-dark);
+            background: white;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .lang-btn:hover {
+            background: var(--light);
+            border-color: var(--primary);
+        }
+
+        .login-btn {
+            background: var(--secondary);
+            color: #4a3000;
+            box-shadow: 0 10px 20px -10px rgba(255, 194, 51, 1);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            background: #ffcf5c;
+        }
+
+        .hero {
+            min-height: 80vh;
+            padding: 100px 0;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            align-items: center;
+            gap: 80px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin-bottom: 24px;
+            padding: 10px 20px;
+            border-radius: 999px;
+            background: var(--mint);
+            color: var(--primary-dark);
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            margin-bottom: 28px;
+            font-size: 4rem;
+            line-height: 1.05;
+            font-weight: 900;
+            color: var(--dark);
+        }
+
+        .hero h1 em {
+            color: var(--primary-dark);
+            font-style: normal;
+        }
+
+        .hero-copy > p {
+            max-width: 580px;
+            margin-bottom: 40px;
+            color: var(--gray);
+            font-size: 1.25rem;
+            line-height: 1.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-bottom: 40px;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            min-height: 58px;
+            padding: 16px 36px;
+            border-radius: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+            font-weight: 800;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .primary-btn {
+            border: none;
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 14px 28px -14px rgba(0, 167, 196, 0.9);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 32px -14px rgba(0, 167, 196, 1);
+        }
+
+        .secondary-btn {
+            border: 2px solid #b6e8ef;
+            background: white;
+            color: var(--primary-dark);
+        }
+
+        .secondary-btn:hover {
+            background: var(--light);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .trust-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 22px;
+        }
+
+        .trust-row span {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-dark);
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .hero-info-box {
+            position: relative;
+            overflow: hidden;
+            min-height: 450px;
+            padding: 45px;
+            border: 1px solid #ddf0f4;
+            border-radius: 32px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--card-shadow);
+        }
+
+        .hero-info-box::before {
+            content: "";
+            position: absolute;
+            top: -100px;
+            right: -80px;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0, 167, 196, 0.14), rgba(67, 217, 199, 0.1));
+        }
+
+        .hero-info-box::after {
+            content: "";
+            position: absolute;
+            bottom: -90px;
+            left: -70px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 194, 51, 0.16), rgba(255, 221, 143, 0.1));
+        }
+
+        .info-icon {
+            position: relative;
+            z-index: 1;
+            width: 75px;
+            height: 75px;
+            margin-bottom: 30px;
+            border-radius: 22px 22px 22px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient);
+            color: white;
+            font-size: 2rem;
+            box-shadow: 0 12px 26px -12px rgba(0, 167, 196, 0.9);
+        }
+
+        .hero-info-box h2 {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 18px;
+            font-size: 2.2rem;
+            line-height: 1.2;
+            font-weight: 800;
+        }
+
+        .hero-info-box > p {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 30px;
+            color: var(--gray);
+            font-size: 1.05rem;
+        }
+
+        .info-line {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 16px 0;
+        }
+
+        .info-line > span {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-sun);
+            color: #4a3000;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+
+        .info-line b {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 1.05rem;
+        }
+
+        .info-line small {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin: 50px 0;
+            padding: 60px 40px;
+            border-radius: 28px;
+            background: white;
+            border: 1px solid #ddf0f4;
+            box-shadow: var(--card-shadow);
+        }
+
+        .stats-item {
+            padding: 30px 20px;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.25s ease;
+        }
+
+        .stats-item:hover {
+            background: var(--paper);
+            border-color: #b6e8ef;
+            transform: translateY(-6px);
+            box-shadow: var(--card-hover);
+        }
+
+        .stats-number {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 3.2rem;
+            font-weight: 900;
+            line-height: 1;
+            color: var(--primary-dark);
+        }
+
+        .stats-label {
+            color: var(--gray);
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .section {
+            padding: 90px 0;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .section-heading h2 {
+            margin-top: 15px;
+            font-size: 2.8rem;
+            font-weight: 800;
+        }
+
+        .text-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-dark);
+            font-weight: 800;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            font-size: 1.05rem;
+        }
+
+        .text-link:hover {
+            gap: 16px;
+            color: var(--primary);
+        }
+
+        .route-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 35px;
+        }
+
+        .route-card {
+            position: relative;
+            overflow: hidden;
+            padding: 40px;
+            border-radius: 28px;
+            background: white;
+            border: 1px solid #ddf0f4;
+            box-shadow: var(--card-shadow);
+            transition: all 0.25s ease;
+        }
+
+        .route-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--gradient);
+        }
+
+        .route-card:hover {
+            transform: translateY(-10px);
+            border-color: #b6e8ef;
+            box-shadow: var(--card-hover);
+        }
+
+        .route-icon {
+            width: 65px;
+            height: 65px;
+            margin-bottom: 25px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--paper);
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+        }
+
+        .route-card h3 {
+            margin-bottom: 12px;
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+
+        .route-card p {
+            margin-bottom: 30px;
+            color: var(--gray);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .outline-btn {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            display: block;
+            background: transparent;
+            color: var(--primary-dark);
+            font-size: 1.05rem;
+            font-weight: 800;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.25s ease;
+        }
+
+        .outline-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px -14px rgba(0, 167, 196, 0.9);
+        }
+
+        .feature-section {
+            margin: 70px 0;
+            padding: 90px 0;
+            border-radius: 30px;
+            background: white;
+            border: 1px solid #ddf0f4;
+            box-shadow: var(--card-shadow);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.8fr;
+            align-items: center;
+            gap: 70px;
+        }
+
+        .feature-grid h2 {
+            font-size: 2.8rem;
+            line-height: 1.15;
+            font-weight: 900;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+        }
+
+        .feature-list > div {
+            display: flex;
+            align-items: flex-start;
+            gap: 28px;
+            padding: 30px;
+            border-radius: 24px;
+            transition: all 0.25s ease;
+        }
+
+        .feature-list > div:hover {
+            background: var(--gradient-light, var(--paper));
+            background: linear-gradient(135deg, #e8f9fb 0%, #fff3d6 100%);
+            transform: translateX(12px);
+        }
+
+        .feature-list > div > span {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px 18px 18px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient);
+            color: white;
+            font-weight: 900;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .feature-list b {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .feature-list p {
+            color: var(--gray);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .footer {
+            margin-top: 90px;
+            padding: 60px 0;
+            background: #e6f7fa;
+            border-top: 1px solid #cfeef4;
+            color: var(--dark);
+        }
+
+        .footer .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .footer b {
+            font-size: 2rem;
+            color: var(--primary-dark);
+            font-weight: 900;
+        }
+
+        .footer span {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        #toast {
+            position: fixed;
+            left: 50%;
+            bottom: 35px;
+            z-index: 9999;
+            max-width: 90%;
+            padding: 18px 35px;
+            border-radius: 999px;
+            background: white;
+            color: var(--dark);
+            font-weight: 700;
+            text-align: center;
+            border: 2px solid #b6e8ef;
+            opacity: 0;
+            transform: translateX(-50%) translateY(100px);
+            transition: all 0.4s ease;
+            box-shadow: 0 20px 40px -18px rgba(0, 130, 154, 0.6);
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 50px;
+                text-align: center;
+            }
+
+            .hero-info-box {
+                min-height: auto;
+                text-align: left;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .trust-row {
+                justify-content: center;
+            }
+
+            .route-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .site-header .container {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .main-nav {
+                display: none;
+            }
+
+            .hero {
+                padding-top: 60px;
+            }
+
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .hero-copy > p {
+                font-size: 1.1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .primary-btn,
+            .secondary-btn {
+                width: 100%;
+            }
+
+            .section-heading {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .section-heading h2 {
+                font-size: 2.2rem;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid h2 {
+                font-size: 2.2rem;
+            }
+
+            .footer .container {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .lang-btn,
+            .login-btn {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+
+            .hero-info-box {
+                padding: 30px;
+            }
+
+            .hero-info-box h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <a href="index.html" class="brand">
+                <span class="brand-mark">SB</span>
+                <span>
+                    <b>Smart</b>Bus
+                    <small>SMART TRAVEL</small>
+                </span>
+            </a>
+            <nav class="main-nav">
+                <a href="index.html" class="active">Басты бет</a>
+                <a href="routes.html">Рейстер</a>
+                <a href="booking.html">Билет брондау</a>
+                <a href="contacts.html">Байланыс</a>
+                <a href="login.html">Басқару</a>
+            </nav>
+            <div class="header-actions">
+                <button class="lang-btn" type="button" onclick="changeLanguage()">ҚАЗ ▾</button>
+                <a href="login.html" class="login-btn">Кіру →</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="hero container">
+            <div class="hero-copy">
+                <span class="eyebrow">● ҚАЗАҚСТАН БОЙЫНША САПАР</span>
+                <h1>
+                    Сапарыңды<br>
+                    <em>ақылды</em> баста.
+                </h1>
+                <p>
+                    SmartBus арқылы қалааралық автобус рейстерін қарап, 
+                    өзіңізге ыңғайлы билетті оңай брондаңыз. Жылдам, ыңғайлы және қауіпсіз!
+                </p>
+                <div class="hero-buttons">
+                    <a href="routes.html" class="primary-btn">Рейстерді көру →</a>
+                    <a href="contacts.html" class="secondary-btn">Байланыс</a>
+                </div>
+                <div class="trust-row">
+                    <span><i class="fas fa-check-circle"></i> Электронды билет</span>
+                    <span><i class="fas fa-check-circle"></i> Орынды таңдау</span>
+                    <span><i class="fas fa-check-circle"></i> Жылдам брондау</span>
+                    <span><i class="fas fa-check-circle"></i> 24/7 қолдау</span>
+                </div>
+            </div>
+            <div class="hero-info-box">
+                <div class="info-icon">
+                    <i class="fas fa-route"></i>
+                </div>
+                <h2>Сапарыңызды оңай жоспарлаңыз</h2>
+                <p>
+                    Қажетті рейсті таңдаңыз, бос орынды белгілеңіз және 
+                    электронды билет алыңыз.
+                </p>
+                <div class="info-line">
+                    <span><i class="fas fa-check"></i></span>
+                    <div>
+                        <b>Ыңғайлы брондау</b>
+                        <small>Бірнеше қадам арқылы билет алыңыз</small>
+                    </div>
+                </div>
+                <div class="info-line">
+                    <span><i class="fas fa-shield-halved"></i></span>
+                    <div>
+                        <b>Қауіпсіз жүйе</b>
+                        <small>Жолаушы мәліметтері қорғалады</small>
+                    </div>
+                </div>
+                <div class="info-line">
+                    <span><i class="fas fa-clock"></i></span>
+                    <div>
+                        <b>Уақытты үнемдеңіз</b>
+                        <small>Рейсті жылдам таңдаңыз</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="container">
+            <div class="stats">
+                <div class="stats-item">
+                    <span class="stats-number">24+</span>
+                    <span class="stats-label">Бағыт</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-number">1,200+</span>
+                    <span class="stats-label">Жолаушы</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-number">98%</span>
+                    <span class="stats-label">Қанағаттану</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-number">24/7</span>
+                    <span class="stats-label">Онлайн жүйе</span>
+                </div>
+            </div>
+        </section>
+        <section class="section container">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">SMARTBUS МҮМКІНДІКТЕРІ</span>
+                    <h2>Сапарды жоспарлау оңай</h2>
+                </div>
+                <a href="routes.html" class="text-link">Рейстерді көру →</a>
+            </div>
+            <div class="route-cards">
+                <article class="route-card">
+                    <span class="route-icon">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <h3>Рейсті іздеу</h3>
+                    <p>
+                        Қажетті бағытты таңдап, барлық қолжетімді рейстерді көріңіз.
+                    </p>
+                    <a href="routes.html" class="outline-btn">Рейстерді көру</a>
+                </article>
+                <article class="route-card">
+                    <span class="route-icon">
+                        <i class="fas fa-ticket"></i>
+                    </span>
+                    <h3>Билет брондау</h3>
+                    <p>
+                        Қолайлы рейсті таңдап, билетке тапсырыс беріңіз.
+                    </p>
+                    <a href="booking.html" class="outline-btn">Билет брондау</a>
+                </article>
+                <article class="route-card">
+                    <span class="route-icon">
+                        <i class="fas fa-headset"></i>
+                    </span>
+                    <h3>Қолдау қызметі</h3>
+                    <p>
+                        Сұрақтарыңыз болса, SmartBus қолдау қызметі көмектеседі.
+                    </p>
+                    <button type="button" class="outline-btn" onclick="openSupport()">
+                        Қолдау алу
+                    </button>
+                </article>
+            </div>
+        </section>
+        <section class="section container" id="support">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">SMARTBUS ҚОЛДАУЫ</span>
+                    <h2>Служба поддержки</h2>
+                </div>
+            </div>
+            <div class="route-cards">
+                <article class="route-card">
+                    <span class="route-icon">
+                        <i class="fas fa-phone"></i>
+                    </span>
+                    <h3>Телефон</h3>
+                    <p>Қолдау қызметі күн сайын 09:00-ден 21:00-ге дейін жұмыс істейді.</p>
+                    <a href="tel:+77001234567" class="outline-btn">+7 700 123 45 67</a>
+                </article>
+                <article class="route-card">
+                    <span class="route-icon">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                    <h3>Электрондық пошта</h3>
+                    <p>Сұрағыңызды жіберіңіз, біз сізге жауап береміз.</p>
+                    <a href="mailto:support@smartbus.kz" class="outline-btn">support@smartbus.kz</a>
+                </article>
+            </div>
+        </section>
+        <section class="feature-section">
+            <div class="container feature-grid">
+                <div>
+                    <span class="eyebrow">НЕГЕ SMARTBUS?</span>
+                    <h2>
+                        Қарапайым.<br>
+                        Жылдам.<br>
+                        Заманауи.
+                    </h2>
+                </div>
+                <div class="feature-list">
+                    <div>
+                        <span>01</span>
+                        <div>
+                            <b>Рейсті оңай іздеу</b>
+                            <p>
+                                Қажетті бағытты таңдап, қолжетімді рейстерді бірден көріңіз.
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <span>02</span>
+                        <div>
+                            <b>Орынды өзіңіз таңдаңыз</b>
+                            <p>
+                                Автобус салонынан бос орынды көріп, өзіңізге ыңғайлы орынды таңдаңыз.
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <span>03</span>
+                        <div>
+                            <b>Электронды билет</b>
+                            <p>
+                                Брондау нәтижесін экраннан көріп, электронды билет алыңыз.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <b>SmartBus</b>
+            <span> © 2026 · Колледж практика жобасы</span>
+            <span> Ақтөбе · Қазақстан</span>
+        </div>
+    </footer>
+    <div id="toast"></div>
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem("smartbus_user") || "null");
+
+        if (!currentUser) {
+            window.location.href = "login.html";
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.classList.add("show");
+            setTimeout(function() {
+                toast.classList.remove("show");
+            }, 3000);
+        }
+        function changeLanguage() {
+            showToast("🌐 Тіл таңдау мәзірі жақында қосылады");
+        }
+        function openSupport() {
+            document.getElementById("support").scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll(".route-card, .stats-item, .feature-list > div").forEach(function(element) {
+            element.style.opacity = "0";
+            element.style.transform = "translateY(30px)";
+            element.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+            observer.observe(element);
+        });
+        window.addEventListener("load", function() {
+            setTimeout(function() {
+                showToast("🚌 SmartBus-қа қош келдіңіз!");
+            }, 500);
+        });
+    </script>
+</body>
+</html>

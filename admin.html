@@ -1,0 +1,1907 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartBus — Басқару панелі</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00a7c4;
+            --primary-dark: #00829a;
+            --secondary: #43d9c7;
+            --accent: #ffc233;
+            --success: #23b877;
+            --danger: #ff6b57;
+            --danger-dark: #ef5540;
+            --dark: #123a46;
+            --gray: #6d8d97;
+            --light: #e8f6f9;
+            --white: #ffffff;
+
+            --paper: #f4fbfd;
+            --mint: #ddf7f1;
+            --sun-soft: #fff3d6;
+
+            --gradient: linear-gradient(
+                135deg,
+                #00c2d4 0%,
+                #43d9c7 100%
+            );
+
+            --gradient-light: linear-gradient(
+                135deg,
+                #e8f9fb 0%,
+                #fff3d6 100%
+            );
+
+            --shadow: 0 6px 18px -8px rgba(18, 58, 70, 0.18);
+
+            --shadow-lg: 0 18px 40px -18px rgba(0, 130, 154, 0.35);
+        }
+
+        body {
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+            font-family: "Manrope", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(
+                    900px 500px at 85% -5%,
+                    #fff0cd 0%,
+                    rgba(255, 240, 205, 0) 60%
+                ),
+                radial-gradient(
+                    800px 500px at 0% 10%,
+                    #d6f7f1 0%,
+                    rgba(214, 247, 241, 0) 60%
+                ),
+                var(--paper);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* HEADER */
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #dff0f4;
+            box-shadow: 0 2px 14px -10px rgba(18, 58, 70, 0.3);
+        }
+
+        .site-header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--dark);
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .brand-mark {
+            width: 45px;
+            height: 45px;
+            border-radius: 16px 16px 16px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 800;
+            box-shadow: 0 8px 16px -8px rgba(0, 167, 196, 0.8);
+        }
+
+        .brand b {
+            color: var(--primary-dark);
+        }
+
+        .brand small {
+            display: block;
+            color: var(--gray);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .main-nav a {
+            padding: 10px 18px;
+            border-radius: 999px;
+            color: var(--dark);
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.25s ease;
+        }
+
+        .main-nav a:hover {
+            background: var(--mint);
+            color: var(--primary-dark);
+        }
+
+        .main-nav a.active {
+            background: var(--sun-soft);
+            color: #9a6b00;
+            box-shadow: inset 0 0 0 2px #ffdd8f;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: var(--mint);
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: 2px solid #ffc7bd;
+            border-radius: 999px;
+            background: #fff1ee;
+            color: #c9412c;
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+            color: white;
+        }
+
+        /* HERO */
+
+        .admin-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 60px 0 40px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: var(--mint);
+            color: var(--primary-dark);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .admin-hero h1 {
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--dark);
+        }
+
+        .admin-hero p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        .admin-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 24px;
+            border-radius: 999px;
+            background: white;
+            border: 1px solid #c8efe4;
+            color: #0f7a63;
+            font-weight: 700;
+            box-shadow: var(--shadow);
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+
+        /* STATS */
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .admin-stat {
+            position: relative;
+            overflow: hidden;
+            padding: 30px;
+            border: 1px solid #ddf0f4;
+            border-radius: 24px;
+            background: white;
+            box-shadow: var(--shadow-lg);
+            transition: 0.25s ease;
+        }
+
+        .admin-stat::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--gradient);
+        }
+
+        .admin-stat:nth-child(4)::before {
+            background: linear-gradient(135deg, #ffc233 0%, #ffdd8f 100%);
+        }
+
+        .admin-stat:hover {
+            border-color: #b6e8ef;
+            transform: translateY(-4px);
+        }
+
+        .admin-stat span {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--gray);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .admin-stat strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--dark);
+        }
+
+        .admin-stat small {
+            color: var(--primary-dark);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* CONTENT */
+
+        .admin-content {
+            padding: 40px 0 80px;
+        }
+
+        .admin-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding: 30px;
+            border-radius: 24px;
+            background: white;
+            border: 1px solid #ddf0f4;
+            box-shadow: var(--shadow);
+        }
+
+        .admin-toolbar h2 {
+            margin-bottom: 8px;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .admin-toolbar p {
+            color: var(--gray);
+        }
+
+        .primary-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 14px;
+            background: var(--accent);
+            color: #4a3000;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s ease;
+            box-shadow: 0 12px 22px -12px rgba(255, 194, 51, 1);
+        }
+
+        .primary-btn:hover {
+            background: #ffcf5c;
+            transform: translateY(-2px);
+        }
+
+        /* TABLE */
+
+        .admin-table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 50px;
+            border-radius: 24px;
+            background: white;
+            border: 1px solid #ddf0f4;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .admin-table {
+            width: 100%;
+            min-width: 950px;
+            border-collapse: collapse;
+        }
+
+        .admin-table thead {
+            background: var(--gradient-light);
+        }
+
+        .admin-table th {
+            padding: 18px 20px;
+            color: var(--primary-dark);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-align: left;
+        }
+
+        .admin-table td {
+            padding: 20px;
+            border-bottom: 1px solid var(--light);
+        }
+
+        .admin-table tbody tr {
+            transition: 0.25s ease;
+        }
+
+        .admin-table tbody tr:hover {
+            background: var(--paper);
+        }
+
+        .admin-table b {
+            color: var(--dark);
+        }
+
+        .table-status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .table-status.active {
+            background: var(--mint);
+            color: #0f7a63;
+        }
+
+        .table-btn {
+            padding: 9px 15px;
+            border: 2px solid #ffc7bd;
+            border-radius: 999px;
+            background: #fff1ee;
+            color: #c9412c;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .table-btn:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+            color: white;
+        }
+
+        /* BOOKINGS */
+
+        .booking-list {
+            display: grid;
+            gap: 18px;
+            padding: 30px;
+            border-radius: 24px;
+            background: white;
+            border: 1px solid #ddf0f4;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .booking-admin-card {
+            display: grid;
+            grid-template-columns: auto 1.4fr repeat(5, 1fr) auto;
+            align-items: center;
+            gap: 18px;
+            padding: 22px;
+            border-radius: 18px;
+            background: var(--paper);
+            border: 1px solid #e2f3f7;
+            transition: 0.25s ease;
+        }
+
+        .booking-admin-card:hover {
+            background: white;
+            border-color: #b6e8ef;
+            box-shadow: var(--shadow);
+        }
+
+        .booking-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient);
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .booking-admin-info b {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--primary-dark);
+            font-size: 1rem;
+        }
+
+        .booking-admin-info span {
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+
+        .booking-label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--gray);
+            font-size: 0.75rem;
+        }
+
+        .booking-value {
+            display: block;
+            color: var(--dark);
+            font-size: 0.85rem;
+            font-weight: 700;
+            word-break: break-word;
+        }
+
+        .empty-admin {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .empty-admin span {
+            display: block;
+            margin-bottom: 20px;
+            font-size: 4rem;
+        }
+
+        .empty-admin h3 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .empty-admin p {
+            color: var(--gray);
+        }
+
+        /* MODAL */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(18, 58, 70, 0.45);
+            backdrop-filter: blur(6px);
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-box {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            border-radius: 28px;
+            background: white;
+            box-shadow: 0 30px 60px -25px rgba(0, 130, 154, 0.55);
+            animation: modalSlide 0.4s ease;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            border: none;
+            background: transparent;
+            color: var(--gray);
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--dark);
+        }
+
+        .modal-box h2 {
+            margin-bottom: 10px;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .modal-box > p {
+            margin-bottom: 30px;
+            color: var(--gray);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .field label {
+            color: var(--gray);
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .field input {
+            padding: 14px 18px;
+            border: 2px solid #e2f3f7;
+            border-radius: 14px;
+            background: var(--paper);
+            color: var(--dark);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: 0.25s ease;
+        }
+
+        .field input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 167, 196, 0.15);
+        }
+
+        /* FOOTER */
+
+        .footer {
+            margin-top: 80px;
+            padding: 50px 0;
+            background: #e6f7fa;
+            border-top: 1px solid #cfeef4;
+            color: var(--dark);
+        }
+
+        .footer .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer b {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+        }
+
+        .footer span {
+            color: var(--gray);
+        }
+
+        /* TOAST */
+
+        #toast {
+            position: fixed;
+            left: 50%;
+            bottom: 30px;
+            z-index: 10000;
+            max-width: 90%;
+            padding: 16px 30px;
+            border-radius: 999px;
+            background: white;
+            color: var(--dark);
+            font-weight: 700;
+            text-align: center;
+            border: 2px solid #b6e8ef;
+            box-shadow: 0 18px 30px -16px rgba(0, 130, 154, 0.6);
+            opacity: 0;
+            transform: translateX(-50%) translateY(100px);
+            transition: 0.4s ease;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+                animation: none !important;
+            }
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1250px) {
+            .booking-admin-card {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .booking-avatar {
+                grid-row: span 2;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .admin-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .booking-admin-card {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .site-header .container {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .main-nav {
+                display: none;
+            }
+
+            .admin-hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-toolbar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .booking-admin-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .booking-avatar {
+                margin: 0 auto;
+            }
+
+            .booking-admin-card .table-status,
+            .booking-admin-card .table-btn {
+                width: 100%;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+            .modal-box {
+                padding: 30px 20px;
+            }
+
+            .footer .container {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .user-badge,
+            .logout-btn {
+                padding: 9px 12px;
+                font-size: 0.8rem;
+            }
+
+            .admin-hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="container">
+
+        <a href="../index.html" class="brand">
+            <span class="brand-mark">SB</span>
+
+            <span>
+                <b>Smart</b>Bus
+                <small>SMART TRAVEL</small>
+            </span>
+        </a>
+
+        <nav class="main-nav">
+
+            <a href="../index.html">
+                Басты бет
+            </a>
+
+            <a href="routes.html">
+                Рейстер
+            </a>
+
+            <a href="booking.html">
+                Билет брондау
+            </a>
+
+            <a href="admin.html" class="active">
+                Басқару
+            </a>
+
+        </nav>
+
+        <div class="header-actions">
+
+            <span
+                id="adminUser"
+                class="user-badge">
+
+                <i class="fas fa-user-shield"></i>
+                Admin
+
+            </span>
+
+            <button
+                type="button"
+                class="logout-btn"
+                onclick="logout()">
+
+                <i class="fas fa-sign-out-alt"></i>
+                Шығу
+
+            </button>
+
+        </div>
+
+    </div>
+</header>
+
+<main>
+
+    <section class="admin-hero container">
+
+        <div>
+
+            <span class="eyebrow">
+                SMARTBUS · ADMIN
+            </span>
+
+            <h1>
+                Басқару панелі
+            </h1>
+
+            <p>
+                Рейстерді, билеттерді және жолаушыларды
+                бір жерден басқарыңыз.
+            </p>
+
+        </div>
+
+        <div class="admin-status">
+
+            <span class="status-dot"></span>
+            Жүйе жұмыс істеп тұр
+
+        </div>
+
+    </section>
+
+    <section class="admin-stats container">
+
+        <div class="admin-stat">
+
+            <span>
+                БРОНДАУ САНЫ
+            </span>
+
+            <strong id="bookingCount">
+                0
+            </strong>
+
+            <small>
+                <i class="fas fa-ticket-alt"></i>
+                Барлық брондау
+            </small>
+
+        </div>
+
+        <div class="admin-stat">
+
+            <span>
+                ЖОЛАУШЫЛАР
+            </span>
+
+            <strong id="passengerCount">
+                0
+            </strong>
+
+            <small>
+                Барлық жолаушы
+            </small>
+
+        </div>
+
+        <div class="admin-stat">
+
+            <span>
+                РЕЙСТЕР
+            </span>
+
+            <strong id="routeCount">
+                0
+            </strong>
+
+            <small>
+                Белсенді бағыт
+            </small>
+
+        </div>
+
+        <div class="admin-stat">
+
+            <span>
+                ЖАЛПЫ ТАБЫС
+            </span>
+
+            <strong id="revenue">
+                0 ₸
+            </strong>
+
+            <small>
+                Барлық брондаудан
+            </small>
+
+        </div>
+
+    </section>
+
+    <section class="admin-content container">
+
+        <div class="admin-toolbar">
+
+            <div>
+                <h2>
+                    Рейстерді басқару
+                </h2>
+
+                <p>
+                    Автобус бағыттарын қосыңыз және өшіріңіз.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                class="primary-btn"
+                onclick="openAddRoute()">
+
+                <i class="fas fa-plus-circle"></i>
+                Жаңа рейс
+
+            </button>
+
+        </div>
+
+        <div class="admin-table-wrapper">
+
+            <table class="admin-table">
+
+                <thead>
+
+                    <tr>
+                        <th>№</th>
+                        <th>Бағыт</th>
+                        <th>Уақыт</th>
+                        <th>Автобус</th>
+                        <th>Орын</th>
+                        <th>Баға</th>
+                        <th>Статус</th>
+                        <th>Әрекет</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="routeTable">
+
+                    <tr>
+                        <td>SB-101</td>
+                        <td>
+                            <b>
+                                Ақтөбе → Алматы
+                            </b>
+                        </td>
+                        <td>12:30</td>
+                        <td>Grand Bus</td>
+                        <td>18 / 40</td>
+                        <td>8 500 ₸</td>
+                        <td>
+                            <span class="table-status active">
+                                Белсенді
+                            </span>
+                        </td>
+                        <td>
+                            <button
+                                type="button"
+                                class="table-btn"
+                                onclick="deleteRoute(this)">
+                                Өшіру
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>SB-205</td>
+                        <td>
+                            <b>
+                                Ақтөбе → Астана
+                            </b>
+                        </td>
+                        <td>19:00</td>
+                        <td>Smart Coach</td>
+                        <td>12 / 40</td>
+                        <td>9 200 ₸</td>
+                        <td>
+                            <span class="table-status active">
+                                Белсенді
+                            </span>
+                        </td>
+                        <td>
+                            <button
+                                type="button"
+                                class="table-btn"
+                                onclick="deleteRoute(this)">
+                                Өшіру
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>SB-310</td>
+                        <td>
+                            <b>
+                                Ақтөбе → Атырау
+                            </b>
+                        </td>
+                        <td>08:30</td>
+                        <td>WestLine</td>
+                        <td>24 / 40</td>
+                        <td>5 500 ₸</td>
+                        <td>
+                            <span class="table-status active">
+                                Белсенді
+                            </span>
+                        </td>
+                        <td>
+                            <button
+                                type="button"
+                                class="table-btn"
+                                onclick="deleteRoute(this)">
+                                Өшіру
+                            </button>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="admin-toolbar">
+
+            <div>
+                <h2>
+                    Брондалған билеттер
+                </h2>
+
+                <p>
+                    Жолаушылар брондаған билеттер осы жерде шығады.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                class="primary-btn"
+                onclick="clearAllBookings()">
+
+                <i class="fas fa-trash"></i>
+                Барлығын өшіру
+
+            </button>
+
+        </div>
+
+        <div
+            id="bookingList"
+            class="booking-list">
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="footer">
+
+    <div class="container">
+
+        <b>
+            SmartBus
+        </b>
+
+        <span>
+            © 2026 · Admin Dashboard
+        </span>
+
+        <span>
+            Ақтөбе · Қазақстан
+        </span>
+
+    </div>
+
+</footer>
+
+<div
+    class="modal"
+    id="routeModal">
+
+    <div class="modal-box">
+
+        <button
+            type="button"
+            class="modal-close"
+            onclick="closeAddRoute()">
+            ×
+        </button>
+
+        <span class="eyebrow">
+            NEW ROUTE
+        </span>
+
+        <h2>
+            Жаңа рейс қосу
+        </h2>
+
+        <p>
+            Жаңа автобус бағыты туралы ақпаратты енгізіңіз.
+        </p>
+
+        <div class="form-grid">
+
+            <div class="field">
+
+                <label for="newFrom">
+                    ҚАЙДАН
+                </label>
+
+                <input
+                    type="text"
+                    id="newFrom"
+                    placeholder="Ақтөбе">
+
+            </div>
+
+            <div class="field">
+
+                <label for="newTo">
+                    ҚАЙДА
+                </label>
+
+                <input
+                    type="text"
+                    id="newTo"
+                    placeholder="Алматы">
+
+            </div>
+
+            <div class="field">
+
+                <label for="newTime">
+                    УАҚЫТ
+                </label>
+
+                <input
+                    type="time"
+                    id="newTime"
+                    value="12:30">
+
+            </div>
+
+            <div class="field">
+
+                <label for="newPrice">
+                    БАҒА
+                </label>
+
+                <input
+                    type="number"
+                    id="newPrice"
+                    placeholder="8500">
+
+            </div>
+
+            <div class="field full">
+
+                <label for="newBus">
+                    АВТОБУС АТАУЫ
+                </label>
+
+                <input
+                    type="text"
+                    id="newBus"
+                    placeholder="Smart Coach">
+
+            </div>
+
+        </div>
+
+        <button
+            type="button"
+            class="primary-btn"
+            onclick="addRoute()">
+
+            <i class="fas fa-plus"></i>
+            Рейсті қосу
+
+        </button>
+
+    </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+    // Админ ретінде кіруді тексеру
+    const user =
+        JSON.parse(
+            localStorage.getItem("smartbus_user")
+        );
+
+    if (!user || user.role !== "Administrator") {
+        window.location.href = "login.html";
+    }
+
+    if (user && user.role === "Administrator") {
+        document.getElementById("adminUser").innerHTML =
+            '<i class="fas fa-user-shield"></i> ' +
+            (user.name || "Admin");
+    }
+
+
+    // Брондауларды алу
+    function getBookings() {
+        return JSON.parse(
+            localStorage.getItem("smartbus_bookings") || "[]"
+        );
+    }
+
+
+    // Бағаны санға айналдыру
+    function parsePrice(value) {
+        if (typeof value === "number") {
+            return value;
+        }
+
+        return Number(
+            String(value || "0")
+                .replace(/\s/g, "")
+                .replace("₸", "")
+                .replace(",", ".")
+        ) || 0;
+    }
+
+
+    // Бағаны форматтау
+    function formatPrice(value) {
+        return Number(value).toLocaleString("kk-KZ") + " ₸";
+    }
+
+
+    // Статистиканы есептеу
+    function updateStatistics() {
+        const bookings = getBookings();
+
+        let passengerTotal = 0;
+        let revenueTotal = 0;
+
+        bookings.forEach(function(booking) {
+
+            passengerTotal += Number(
+                booking.passengerCount ||
+                booking.passengers?.length ||
+                1
+            );
+
+            revenueTotal += parsePrice(
+                booking.totalPrice ||
+                booking.total ||
+                booking.price
+            );
+        });
+
+        document.getElementById("bookingCount").textContent =
+            bookings.length;
+
+        document.getElementById("passengerCount").textContent =
+            passengerTotal;
+
+        document.getElementById("revenue").textContent =
+            formatPrice(revenueTotal);
+
+        renderBookings(bookings);
+    }
+
+
+    // Брондалған билеттерді экранға шығару
+    function renderBookings(bookings) {
+        const list =
+            document.getElementById("bookingList");
+
+        if (!bookings || bookings.length === 0) {
+            list.innerHTML = `
+                <div class="empty-admin">
+                    <span>🎫</span>
+
+                    <h3>
+                        Әзірге брондалған билет жоқ
+                    </h3>
+
+                    <p>
+                        Жолаушы билет брондаған кезде
+                        осы жерде көрсетіледі.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+        list.innerHTML = bookings
+            .slice()
+            .reverse()
+            .map(function(booking) {
+                return createBookingCard(booking);
+            })
+            .join("");
+    }
+
+
+    // Бір брондалған билет карточкасы
+    function createBookingCard(booking) {
+        const passengers =
+            booking.passengers || [];
+
+        const passengerCount =
+            booking.passengerCount ||
+            passengers.length ||
+            1;
+
+        const seats =
+            Array.isArray(booking.seats)
+                ? booking.seats.join(", ")
+                : booking.seat || "—";
+
+        const passengerNames =
+            passengers.length > 0
+                ? passengers
+                    .map(function(passenger) {
+                        return passenger.name;
+                    })
+                    .join(", ")
+                : booking.name || "—";
+
+        const phoneNumbers =
+            passengers.length > 0
+                ? passengers
+                    .map(function(passenger) {
+                        return passenger.phone;
+                    })
+                    .join(", ")
+                : booking.phone || "—";
+
+        const totalPrice =
+            parsePrice(
+                booking.totalPrice ||
+                booking.total ||
+                booking.price
+            );
+
+        const bookingId =
+            booking.id || "SB-000000";
+
+        const from =
+            booking.from || "—";
+
+        const to =
+            booking.to || "—";
+
+        const busNumber =
+            booking.busNumber || "—";
+
+        const time =
+            booking.time || "—";
+
+        const date =
+            booking.date || "—";
+
+        return `
+            <div class="booking-admin-card">
+
+                <div class="booking-avatar">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+
+                <div class="booking-admin-info">
+                    <b>${bookingId}</b>
+                    <span>
+                        ${from} → ${to}
+                    </span>
+                </div>
+
+                <div>
+                    <span class="booking-label">
+                        Жолаушы
+                    </span>
+
+                    <span class="booking-value">
+                        ${passengerNames}
+                    </span>
+                </div>
+
+                <div>
+                    <span class="booking-label">
+                        Телефон
+                    </span>
+
+                    <span class="booking-value">
+                        ${phoneNumbers}
+                    </span>
+                </div>
+
+                <div>
+                    <span class="booking-label">
+                        Автобус
+                    </span>
+
+                    <span class="booking-value">
+                        ${busNumber}
+                    </span>
+                </div>
+
+                <div>
+                    <span class="booking-label">
+                        Орын
+                    </span>
+
+                    <span class="booking-value">
+                        ${seats}
+                    </span>
+                </div>
+
+                <div>
+                    <span class="booking-label">
+                        Билет саны
+                    </span>
+
+                    <span class="booking-value">
+                        ${passengerCount} адам
+                    </span>
+                </div>
+
+                <div>
+                    <span class="booking-label">
+                        Уақыт
+                    </span>
+
+                    <span class="booking-value">
+                        ${time}
+                    </span>
+                </div>
+
+                <div>
+                    <span class="booking-label">
+                        Күні
+                    </span>
+
+                    <span class="booking-value">
+                        ${date}
+                    </span>
+                </div>
+
+                <div>
+                    <span class="booking-label">
+                        Жалпы баға
+                    </span>
+
+                    <span class="booking-value">
+                        ${formatPrice(totalPrice)}
+                    </span>
+                </div>
+
+                <span class="table-status active">
+                    Брондалды
+                </span>
+
+                <button
+                    type="button"
+                    class="table-btn"
+                    onclick="deleteBooking('${bookingId}')">
+
+                    Өшіру
+
+                </button>
+
+            </div>
+        `;
+    }
+
+
+    // Бір брондауды өшіру
+    function deleteBooking(bookingId) {
+        const answer =
+            confirm(
+                "Бұл брондауды өшіруге сенімдісіз бе?"
+            );
+
+        if (!answer) {
+            return;
+        }
+
+        const bookings =
+            getBookings();
+
+        const filtered =
+            bookings.filter(function(booking) {
+                return booking.id !== bookingId;
+            });
+
+        localStorage.setItem(
+            "smartbus_bookings",
+            JSON.stringify(filtered)
+        );
+
+        updateStatistics();
+
+        showToast("✓ Брондау өшірілді");
+    }
+
+
+    // Барлық брондауды өшіру
+    function clearAllBookings() {
+        const bookings =
+            getBookings();
+
+        if (bookings.length === 0) {
+            showToast("⚠ Өшіретін брондау жоқ");
+            return;
+        }
+
+        const answer =
+            confirm(
+                "Барлық брондалған билеттер өшірілсін бе?"
+            );
+
+        if (!answer) {
+            return;
+        }
+
+        localStorage.removeItem(
+            "smartbus_bookings"
+        );
+
+        localStorage.removeItem(
+            "smartbus_last_booking"
+        );
+
+        updateStatistics();
+
+        showToast("✓ Барлық брондау өшірілді");
+    }
+
+
+    // Жаңа рейс модалын ашу
+    function openAddRoute() {
+        document
+            .getElementById("routeModal")
+            .classList.add("show");
+    }
+
+
+    // Жаңа рейс модалын жабу
+    function closeAddRoute() {
+        document
+            .getElementById("routeModal")
+            .classList.remove("show");
+    }
+
+
+    // Жаңа рейс қосу
+    function addRoute() {
+        const from =
+            document
+                .getElementById("newFrom")
+                .value
+                .trim();
+
+        const to =
+            document
+                .getElementById("newTo")
+                .value
+                .trim();
+
+        const time =
+            document
+                .getElementById("newTime")
+                .value;
+
+        const price =
+            document
+                .getElementById("newPrice")
+                .value;
+
+        const bus =
+            document
+                .getElementById("newBus")
+                .value
+                .trim();
+
+        if (!from || !to || !time || !price || !bus) {
+            showToast(
+                "⚠ Барлық ақпаратты енгізіңіз"
+            );
+
+            return;
+        }
+
+        const table =
+            document.getElementById("routeTable");
+
+        const number =
+            "SB-" + Date.now();
+
+        const savedRoutes = getCustomRoutes();
+
+        savedRoutes.push({
+            id: number,
+            from: from,
+            to: to,
+            time: time,
+            price: Number(price),
+            bus: bus
+        });
+
+        saveCustomRoutes(savedRoutes);
+
+        const row =
+            document.createElement("tr");
+
+        row.dataset.routeId = number;
+
+        row.innerHTML = `
+            <td>${number}</td>
+
+            <td>
+                <b>
+                    ${from} → ${to}
+                </b>
+            </td>
+
+            <td>
+                ${time}
+            </td>
+
+            <td>
+                ${bus}
+            </td>
+
+            <td>
+                40 / 40
+            </td>
+
+            <td>
+                ${formatPrice(price)}
+            </td>
+
+            <td>
+                <span class="table-status active">
+                    Белсенді
+                </span>
+            </td>
+
+            <td>
+                <button
+                    type="button"
+                    class="table-btn"
+                    onclick="deleteRoute(this)">
+                    Өшіру
+                </button>
+            </td>
+        `;
+
+        table.appendChild(row);
+
+        updateRouteCount();
+        closeAddRoute();
+
+        document.getElementById("newFrom").value = "";
+        document.getElementById("newTo").value = "";
+        document.getElementById("newPrice").value = "";
+        document.getElementById("newBus").value = "";
+
+        showToast("✓ Жаңа рейс қосылды");
+    }
+
+
+    // Рейсті өшіру
+    function deleteRoute(button) {
+        const row =
+            button.closest("tr");
+
+        if (row) {
+            const routeId = row.dataset.routeId;
+
+            if (routeId) {
+                saveCustomRoutes(
+                    getCustomRoutes().filter(function(route) {
+                        return route.id !== routeId;
+                    })
+                );
+            }
+
+            row.remove();
+        }
+
+        updateRouteCount();
+
+        showToast("✓ Рейс өшірілді");
+    }
+
+
+    // Рейс санын жаңарту
+    function updateRouteCount() {
+        const rows =
+            document.querySelectorAll(
+                "#routeTable tr"
+            );
+
+        document.getElementById("routeCount").textContent =
+            rows.length;
+    }
+
+
+    function getCustomRoutes() {
+        return JSON.parse(
+            localStorage.getItem("smartbus_routes") || "[]"
+        );
+    }
+
+
+    function saveCustomRoutes(routes) {
+        localStorage.setItem(
+            "smartbus_routes",
+            JSON.stringify(routes)
+        );
+    }
+
+
+    function escapeHTML(value) {
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    function renderSavedRoutes() {
+        const table =
+            document.getElementById("routeTable");
+
+        getCustomRoutes().forEach(function(route) {
+            const row = document.createElement("tr");
+
+            row.dataset.routeId = route.id;
+            row.innerHTML = `
+                <td>${escapeHTML(route.id)}</td>
+                <td><b>${escapeHTML(route.from)} → ${escapeHTML(route.to)}</b></td>
+                <td>${escapeHTML(route.time)}</td>
+                <td>${escapeHTML(route.bus)}</td>
+                <td>40 / 40</td>
+                <td>${formatPrice(route.price)}</td>
+                <td><span class="table-status active">Белсенді</span></td>
+                <td>
+                    <button type="button" class="table-btn" onclick="deleteRoute(this)">
+                        Өшіру
+                    </button>
+                </td>
+            `;
+
+            table.appendChild(row);
+        });
+    }
+
+
+    // Жүйеден шығу
+    function logout() {
+        localStorage.removeItem(
+            "smartbus_user"
+        );
+
+        showToast("✓ Жүйеден шықтыңыз");
+
+        setTimeout(function() {
+            window.location.href =
+                "login.html";
+        }, 700);
+    }
+
+
+    // Хабарлама
+    function showToast(message) {
+        const toast =
+            document.getElementById("toast");
+
+        toast.textContent = message;
+        toast.classList.add("show");
+
+        setTimeout(function() {
+            toast.classList.remove("show");
+        }, 3000);
+    }
+
+
+    // Басқа беттен өзгеріс келсе автоматты жаңарту
+    window.addEventListener(
+        "storage",
+        function(event) {
+            if (
+                event.key === "smartbus_bookings"
+            ) {
+                updateStatistics();
+            }
+        }
+    );
+
+
+    // Бастапқы іске қосу
+    renderSavedRoutes();
+    updateStatistics();
+    updateRouteCount();
+</script>
+
+</body>
+</html>
